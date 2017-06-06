@@ -31,7 +31,10 @@ module GitRepoBuilder
     # @example Checkout to a non existing branch of current repo
     #   GitRepoBuilder.checkout(::Rails.root, rand.to_s) #=> false
     def checkout?(path, branch)
-      result = SupportEngine::Shell.call("cd #{path} && git checkout #{branch}", raise_on_invalid_exit: false)
+      result = SupportEngine::Shell.call(
+        "cd #{path} && git checkout #{branch}",
+        raise_on_invalid_exit: false
+      )
       result[:exit_code].zero? && result[:stderr].strip == "Switched to branch '#{branch}'"
     end
 
