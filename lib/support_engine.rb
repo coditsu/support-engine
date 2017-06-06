@@ -18,4 +18,9 @@ module SupportEngine
   end
 end
 
-require_all File.dirname(__FILE__) + '/**/*.rb'
+# Do not load Git::RepoBuilder
+require_all(
+  Dir.glob(
+    File.join(File.dirname(__FILE__), '**', '*.rb')
+  ).reject { |f| f.include?('repo_builder') }
+)
