@@ -19,12 +19,12 @@ module SupportEngine
           # Creates a dummy repository in LOCATION with some commits and branches
           def bootstrap
             destroy
-            `#{const_get(:BOOTSTRAP_CMD)}`
+            SupportEngine::Shell.call(const_get(:BOOTSTRAP_CMD))
           end
 
           # Destroys dummy repository directory
           def destroy
-            FileUtils.rm_r(location, secure: true) if File.exist?(location)
+            FileUtils.rm_r(location, secure: true) if Dir.exist?(location)
           end
         end
       end
