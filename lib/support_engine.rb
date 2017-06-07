@@ -18,7 +18,7 @@ module SupportEngine
   end
 end
 
-# Do not load Git::RepoBuilder
+# Most of the time we won't need Git::RepoBuilder so don't require it by default
 require_all(
   Dir.glob(
     File.join(File.dirname(__FILE__), '**', '*.rb')

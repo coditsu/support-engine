@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# As GitRepoBuilder is not loaded by default we add the require everything here
+# so we don't need to require every single library when we need it in external system
 require_all(
   Dir.glob(
     File.join(SupportEngine.gem_root, 'lib', 'support_engine', 'git', 'repo_builder', '**', '*.rb')
