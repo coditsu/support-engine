@@ -17,29 +17,6 @@ module SupportEngine
 
         true
       end
-
-      # Fetches newest commit for each day with day details
-      # @param [String, Pathname] path to a place where git repo is
-      # @return [Hash] hash where key is the day and value is a git commit hash
-      # @raise [Errors::FailedShellCommand] raised when anything went wrong
-      #
-      # @example Run for current repo
-      #   SupportEngine::Git.commits('./') #=> { 2016-11-03"=>"7a4...", "2016-11-04"=>"a614..." }
-      def commits(path)
-        command = 'git log --all --format="%ci|%H" --date=local | sort -u -k1,1'
-        result = Shell.call_in_path(path, command)
-
-        raise Errors::FailedShellCommand, result[:stderr] \
-          unless result[:exit_code].zero?
-        raise Errors::FailedShellCommand, result[:stderr] \
-          if result[:stderr].include?('Not a git repository')
-
-        result_array = result[:stdout].split("\n")
-        result_array.map! { |x| x.split('|') }
-        result_array.map! { |z| [z[0].split(' ')[0], z[1]] }
-
-        Hash[result_array]
-      end
     end
   end
 end

@@ -74,27 +74,4 @@ RSpec.describe SupportEngine::Git do
       it { expect { clone_mirror }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
-
-  describe '#commits' do
-    subject(:commits) { described_class.commits(path) }
-
-    context 'when path exist and git repo' do
-      let(:path) { Pathname.new './' }
-
-      it { expect { commits }.not_to raise_error }
-      it { expect(commits['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
-    end
-
-    context 'when path exist but not git repo' do
-      let(:path) { Pathname.new '/' }
-
-      it { expect { commits }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
-    end
-
-    context 'when path does not exist' do
-      let(:path) { Pathname.new "/#{rand}" }
-
-      it { expect { commits }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
-    end
-  end
 end

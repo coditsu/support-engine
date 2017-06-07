@@ -2,6 +2,7 @@
 
 %w[
   active_support/inflector
+  active_support/time
   open3
   require_all
 ].each { |lib| require lib }

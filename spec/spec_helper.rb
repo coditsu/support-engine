@@ -14,6 +14,9 @@ end
 require 'support_engine'
 require 'support_engine/git/repo_builder'
 
+# Set default timezone
+Time.zone = 'UTC'
+
 SimpleCov.minimum_coverage 100
 
 # Don't include unnecessary stuff into rcov
