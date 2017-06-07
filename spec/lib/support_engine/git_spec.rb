@@ -82,7 +82,7 @@ RSpec.describe SupportEngine::Git do
       let(:path) { Pathname.new './' }
 
       it { expect { commits }.not_to raise_error }
-      it { expect(commits['2017-06-06']).to eq '8e43af3873cab47c49ad44798b0063f4104764c0' }
+      it { expect(commits['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
     end
 
     context 'when path exist but not git repo' do
