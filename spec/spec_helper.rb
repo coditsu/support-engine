@@ -12,6 +12,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 end
 
 require 'support_engine'
+require 'support_engine/git/repo_builder'
 
 SimpleCov.minimum_coverage 100
 
@@ -22,22 +23,6 @@ SimpleCov.start do
   add_filter '/spec/'
   add_filter '/config/'
   merge_timeout 600
-end
-
-# Some of the support classes depend on one another, so we have to load them in a
-# particular order to make them work
-%w[
-  base
-  master
-  no_master
-  broken_head_ref
-  *
-].each do |lib_chunk|
-  Dir[
-    File.join(
-      SupportEngine.gem_root, 'spec', 'support', '**', "#{lib_chunk}.rb"
-    )
-  ].each { |f| require f }
 end
 
 RSpec.configure do |config|
@@ -51,12 +36,12 @@ RSpec.configure do |config|
   config.before(:suite) do
     # In order to check that mirroring works, we need to bootstrap a dummy repository
     # with some commits in master and non-master branch to ensure that mirroring works
-    GitRepoBuilder.bootstrap
+    SupportEngine::Git::RepoBuilder.bootstrap
   end
 
   config.after(:suite) do
     # Cleanup of dummy repo and test tmp sources path so we don't leave behind
     # garbage cloned test repositories
-    GitRepoBuilder.destroy
+    SupportEngine::Git::RepoBuilder.destroy
   end
 end

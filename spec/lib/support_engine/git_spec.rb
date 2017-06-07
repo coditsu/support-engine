@@ -9,7 +9,7 @@ RSpec.describe SupportEngine::Git do
     after { FileUtils.rm_rf(dest) }
 
     context 'when path exist and git repo with master branch' do
-      let(:path) { GitRepoBuilder::Repositories::MasterMirror.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
 
       context 'should clone without errors' do
         it { expect { clone_mirror }.not_to raise_error }
@@ -19,13 +19,15 @@ RSpec.describe SupportEngine::Git do
       context 'check if we cloned properly' do
         before { clone_mirror }
 
-        it { expect(GitRepoBuilder.bare?(dest)).to be false }
-        it { expect(GitRepoBuilder.checkout?(dest, 'different-branch')).to be true }
+        it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+        it do
+          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+        end
       end
     end
 
     context 'when path exist and git repo with no master branch' do
-      let(:path) { GitRepoBuilder::Repositories::NoMasterMirror.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::NoMasterMirror.location }
 
       context 'should clone without errors' do
         it { expect { clone_mirror }.not_to raise_error }
@@ -35,13 +37,15 @@ RSpec.describe SupportEngine::Git do
       context 'check if we cloned properly' do
         before { clone_mirror }
 
-        it { expect(GitRepoBuilder.bare?(dest)).to be false }
-        it { expect(GitRepoBuilder.checkout?(dest, 'different-branch')).to be true }
+        it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+        it do
+          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+        end
       end
     end
 
     context 'when path exist and git repo with broken head ref' do
-      let(:path) { GitRepoBuilder::Repositories::BrokenHeadRefMirror.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRefMirror.location }
 
       context 'should clone without errors' do
         it { expect { clone_mirror }.not_to raise_error }
@@ -51,8 +55,10 @@ RSpec.describe SupportEngine::Git do
       context 'check if we cloned properly' do
         before { clone_mirror }
 
-        it { expect(GitRepoBuilder.bare?(dest)).to be false }
-        it { expect(GitRepoBuilder.checkout?(dest, 'different-branch')).to be true }
+        it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+        it do
+          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+        end
       end
     end
 
@@ -76,7 +82,7 @@ RSpec.describe SupportEngine::Git do
       let(:path) { Pathname.new './' }
 
       it { expect { commits }.not_to raise_error }
-      it { expect(commits['2017-06-06']).to eq '8e43af3873cab47c49ad44798b0063f4104764c0' }
+      it { expect(commits['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
     end
 
     context 'when path exist but not git repo' do

@@ -4,7 +4,7 @@ RSpec.describe SupportEngine::Git::Ref do
   describe '#latest' do
     subject(:latest) { described_class.latest(path) }
 
-    let(:path) { GitRepoBuilder::Repositories::Master.location }
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
     it { expect(latest).to eq('refs/heads/different-branch') }
   end
@@ -12,7 +12,7 @@ RSpec.describe SupportEngine::Git::Ref do
   describe '#head' do
     subject(:head) { described_class.head(path) }
 
-    let(:path) { GitRepoBuilder::Repositories::Master.location }
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
     context 'result' do
       it { expect(head).to be_instance_of(Hash) }
@@ -23,7 +23,7 @@ RSpec.describe SupportEngine::Git::Ref do
     end
 
     context 'raise_on_invalid_exit true by default' do
-      let(:path) { GitRepoBuilder::Repositories::BrokenHeadRef.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       it { expect { head }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
@@ -31,7 +31,7 @@ RSpec.describe SupportEngine::Git::Ref do
     context 'raise_on_invalid_exit false' do
       subject(:head) { described_class.head(path, false) }
 
-      let(:path) { GitRepoBuilder::Repositories::BrokenHeadRef.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       it { expect { head }.not_to raise_error }
       it { expect(head).to be_instance_of(Hash) }
@@ -48,14 +48,14 @@ RSpec.describe SupportEngine::Git::Ref do
     subject(:head!) { described_class.head!(path) }
 
     context 'head ref' do
-      let(:path) { GitRepoBuilder::Repositories::Master.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
       it { expect(head!).to eq('master') }
     end
 
     context 'broken head ref' do
       let(:path) { File.join(SupportEngine.gem_root, 'tmp', rand.to_s) }
-      let(:dest) { GitRepoBuilder::Repositories::BrokenHeadRef.location }
+      let(:dest) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       before { SupportEngine::Git.clone_mirror(dest, path) }
       after { FileUtils.rm_rf(path) }
@@ -68,13 +68,13 @@ RSpec.describe SupportEngine::Git::Ref do
     subject(:head?) { described_class.head?(described_class.head(path, false)) }
 
     context 'head ref' do
-      let(:path) { GitRepoBuilder::Repositories::Master.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
       it { expect(head?).to be true }
     end
 
     context 'broken head ref' do
-      let(:path) { GitRepoBuilder::Repositories::BrokenHeadRef.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       it { expect(head?).to be false }
     end
