@@ -7,6 +7,13 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
     it { expect(location).to be_instance_of(String) }
   end
 
+  describe '.location_git' do
+    subject(:location_git) { described_class.location_git }
+
+    it { expect(location_git).to be_instance_of(String) }
+    it { expect(location_git).to include('.git') }
+  end
+
   describe '.bootstrap' do
     subject(:bootstrap) { described_class.bootstrap }
 
