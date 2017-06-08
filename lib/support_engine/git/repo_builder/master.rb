@@ -17,7 +17,8 @@ module SupportEngine
           'touch different-branch.txt',
           'git add --all ./',
           'git commit -m "different-branch commit"',
-          'git checkout master'
+          'git checkout master',
+          "git remote add origin #{ORIGIN}"
         ].join(' && ').freeze
       end
     end

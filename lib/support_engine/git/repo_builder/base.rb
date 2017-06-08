@@ -9,6 +9,9 @@ module SupportEngine
       # a test repository that will contain commits, etc and will be in a particular
       # state (mirror, bare, etc).
       class Base
+        # Origin poiting to external location
+        ORIGIN = 'https://something.origin/well'
+
         class << self
           # Where should we put our test dummy repo
           def location
