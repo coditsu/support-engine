@@ -19,6 +19,11 @@ module SupportEngine
             File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
           end
 
+          # Path to .git folder of our location
+          def location_git
+            File.join(location, '.git')
+          end
+
           # Creates a dummy repository in LOCATION with some commits and branches
           def bootstrap
             destroy
