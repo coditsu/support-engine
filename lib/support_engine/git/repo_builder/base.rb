@@ -9,19 +9,25 @@ module SupportEngine
       # a test repository that will contain commits, etc and will be in a particular
       # state (mirror, bare, etc).
       class Base
-        # Origin poiting to external location
-        ORIGIN = 'https://something.origin/well'
-
         class << self
           # Where should we put our test dummy repo
           def location
-            name = to_s.split('::').last.underscore
             File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
           end
 
           # Path to .git folder of our location
           def location_git
             File.join(location, '.git')
+          end
+
+          # Origin poiting to external location
+          def origin
+            "https://something.origin/#{name}"
+          end
+
+          # Return class name as underscore string
+          def name
+            to_s.split('::').last.underscore
           end
 
           # Creates a dummy repository in LOCATION with some commits and branches

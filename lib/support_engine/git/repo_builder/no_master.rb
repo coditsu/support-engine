@@ -23,7 +23,7 @@ module SupportEngine
           'git add --all ./',
           'git commit -m "different-branch commit"',
           'git checkout develop',
-          "git remote add origin #{ORIGIN}",
+          "git remote add origin #{origin}",
           'git branch -D master'
         ].join(' && ').freeze
       end

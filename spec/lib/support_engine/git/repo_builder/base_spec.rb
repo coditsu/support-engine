@@ -14,6 +14,20 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
     it { expect(location_git).to include('.git') }
   end
 
+  describe '.name' do
+    subject(:name) { described_class.name }
+
+    it { expect(name).to be_instance_of(String) }
+    it { expect(name).to eq('base') }
+  end
+
+  describe '.origin' do
+    subject(:origin) { described_class.origin }
+
+    it { expect(origin).to be_instance_of(String) }
+    it { expect(origin).to eq('https://something.origin/base') }
+  end
+
   describe '.bootstrap' do
     subject(:bootstrap) { described_class.bootstrap }
 
