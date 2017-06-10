@@ -11,6 +11,7 @@ module SupportEngine
       #   (won't raise any errors but instead will catch all things)
       # @param command_with_options [String] command that should be executed with
       #   all the arguments and options
+      # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
       # @return [Hash] hash with 3 keys describing output
       #   (stdout, stderr, exit_code)
       # @example Run ls
@@ -31,13 +32,14 @@ module SupportEngine
         result
       end
 
-      # @param [String, Pathname] path to a place where git repo is
-      # @param [String] command that we want to execute in path context
+      # @param path [String, Pathname] to a place where git repo is
+      # @param command [String] that we want to execute in path context
+      # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
       # @return [Hash] hash with 3 keys describing output
       #   (stdout, stderr, exit_code)
-      def call_in_path(path, command, options = { raise_on_invalid_exit: true })
+      def call_in_path(path, command, raise_on_invalid_exit: true)
         command = ['cd', path.to_s.shellescape, '&&', command]
-        call(command.join(' '), options)
+        call(command.join(' '), raise_on_invalid_exit: raise_on_invalid_exit)
       end
 
       # Escapes any dangerous parameters so we can use a string in a safe way in shell
