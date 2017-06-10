@@ -65,4 +65,21 @@ RSpec.describe SupportEngine::Shell do
       expect(shell_result[:exit_code]).to eq(0)
     end
   end
+
+  describe '.escape' do
+    context 'when string is safe' do
+      [rand.to_s, 'random-words', 'nothing_special'].each do |string|
+        it { expect(described_class.escape(string)).to eq(string) }
+      end
+    end
+
+    context 'when we have unsafe data' do
+      {
+        'rm -rf' => 'rm\\ -rf',
+        'tada dada' => 'tada\\ dada'
+      }.each do |unsafe, safe|
+        it { expect(described_class.escape(unsafe)).to eq(safe) }
+      end
+    end
+  end
 end

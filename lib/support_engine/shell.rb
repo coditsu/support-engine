@@ -39,6 +39,13 @@ module SupportEngine
         command = ['cd', path.to_s.shellescape, '&&', command]
         call(command.join(' '), options)
       end
+
+      # Escapes any dangerous parameters so we can use a string in a safe way in shell
+      # @param shell_string [String] string that we want to escape
+      # @return [String] safe shell parameter string
+      def escape(shell_string)
+        Shellwords.escape(shell_string)
+      end
     end
   end
 end

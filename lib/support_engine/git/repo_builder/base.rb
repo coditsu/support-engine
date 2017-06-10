@@ -12,12 +12,12 @@ module SupportEngine
         class << self
           # Where should we put our test dummy repo
           def location
-            File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
+            ::File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
           end
 
           # Path to .git folder of our location
           def location_git
-            File.join(location, '.git')
+            ::File.join(location, '.git')
           end
 
           # Origin poiting to external location

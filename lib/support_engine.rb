@@ -5,6 +5,7 @@
   active_support/time
   open3
   require_all
+  shellwords
 ].each { |lib| require lib }
 
 # Shared libraries used across multiple apps
@@ -14,7 +15,7 @@ module SupportEngine
     # @example
     #   SupportEngine.gem_root #=> '/home/user/.gems/support_engine'
     def gem_root
-      File.expand_path('../..', __FILE__)
+      ::File.expand_path('../..', __FILE__)
     end
   end
 end
