@@ -74,4 +74,22 @@ RSpec.describe SupportEngine::Git do
       it { expect { clone_mirror }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
+
+  describe '.blame' do
+    subject(:blame) { described_class.blame(path, 'master.rb') }
+
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+
+    it { expect(blame).to be_a(Array) }
+    it { expect(blame.count).to eq(13) }
+  end
+
+  describe '.blame_line' do
+    subject(:blame_line) { described_class.blame_line(path, 'master.rb', 1) }
+
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+
+    it { expect(blame_line).to be_a(Array) }
+    it { expect(blame_line.count).to eq(12) }
+  end
 end
