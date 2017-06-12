@@ -25,6 +25,11 @@ module SupportEngine
             "https://something.origin/#{name}"
           end
 
+          # Default committer
+          def committer
+            Committer.call
+          end
+
           # Return class name as underscore string
           def name
             to_s.split('::').last.underscore

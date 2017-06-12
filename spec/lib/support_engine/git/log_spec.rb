@@ -19,7 +19,11 @@ RSpec.describe SupportEngine::Git::Log do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.location }
 
       it { expect(shortlog.count).to eq(3) }
-      it { expect(shortlog.any? { |v| v.include?('committer1@coditsu.io') }).to be true }
+      it do
+        expect(
+          shortlog.any? { |v| v.include?(SupportEngine::Git::RepoBuilder::Committer.email) }
+        ).to be true
+      end
       it { expect(shortlog.any? { |v| v.include?('committer2@coditsu.io') }).to be true }
       it { expect(shortlog.any? { |v| v.include?('committer3@coditsu.io') }).to be true }
     end

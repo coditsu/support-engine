@@ -12,12 +12,12 @@ module SupportEngine
           'yarn init -y',
           'yarn add cloc',
           'git add --all ./',
-          'git commit -m "master commit"',
+          "git commit -m 'master commit' --author '#{committer}'",
           'git branch different-branch',
           'git checkout different-branch',
           'touch different-branch.txt',
           'git add --all ./',
-          'git commit -m "different-branch commit"',
+          "git commit -m 'different-branch commit' --author '#{committer}'",
           'git checkout master',
           "git remote add origin #{origin}"
         ].join(' && ').freeze

@@ -11,7 +11,7 @@ module SupportEngine
           "cd #{location}",
           'echo "hash = { \'test\' => 1 }" > master.rb',
           'git add --all ./',
-          'git commit -m "master commit committer1" --author "Committer1 <committer1@coditsu.io>"',
+          "git commit -m 'master commit' --author '#{committer}'",
           'echo "hash = { \'test\' => 2 }" > master.rb',
           'git add --all ./',
           'git commit -m "master commit committer2" --author "Committer2 <committer2@coditsu.io>"',
@@ -22,7 +22,7 @@ module SupportEngine
           'git checkout different-branch',
           'touch different-branch.txt',
           'git add --all ./',
-          'git commit -m "different-branch commit" --author "Committer1 <committer1@coditsu.io>"',
+          "git commit -m 'different-branch commit' --author '#{committer}'",
           'git checkout master',
           "git remote add origin #{origin}"
         ].join(' && ').freeze
