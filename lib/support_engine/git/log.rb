@@ -34,6 +34,34 @@ module SupportEngine
             "-n 1 --word-diff=porcelain --date=raw '#{location}'"
           )
         end
+
+        # Runs a git log with --shortstats option
+        # @param path [String] path of a current repository build
+        # @param limit [Integer, nil] number of lines that we want
+        # @param commit [String, nil] commit name or nil if we want shortstat for all
+        #   commits
+        # @return [Array<String>] Lines returned by the git log --shortstat command
+        # @example
+        #   SupportEngine::Git::Log.shortstat('./', 2) #=>
+        #   [
+        #     '4 files changed, 13 insertions(+), 36 deletions(-)',
+        #     'ab7928cc003e2306c9d7ec729fb1d87e808337c0 ninshiki'
+        #   ]
+        def shortstat(path, limit = nil, commit = nil)
+          options = []
+          options << '--shortstat'
+          options << '--format="oneline"'
+          options << "-n#{limit}" if limit
+          options << commit if commit
+
+          Shell::Git.call_in_path(path, :log, options.join(' '))
+        end
+
+        # @param path [String] path of a current repository build
+        # @return [DateTime] datetime of a head commit
+        def head_committed_at(path)
+          Time.parse(Shell::Git.call_in_path(path, :log, '-1 --format=%cd').first)
+        end
       end
     end
   end

@@ -17,6 +17,13 @@ module SupportEngine
 
         true
       end
+
+      # Get file count tracked by git
+      # @param path [String] path of a current repository build
+      # @return [Integer] number of files tracked by git
+      def tracked_files_count(path)
+        Shell::Git.call_in_path(path, 'ls-files', '| wc -l').first.to_i
+      end
     end
   end
 end

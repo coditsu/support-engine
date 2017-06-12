@@ -74,4 +74,13 @@ RSpec.describe SupportEngine::Git do
       it { expect { clone_mirror }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
+
+  describe '.tracked_files_count' do
+    subject(:tracked_files_count) { described_class.tracked_files_count(path) }
+
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+
+    it { expect(tracked_files_count).to be_a(Integer) }
+    it { expect(tracked_files_count).to eq(1) }
+  end
 end
