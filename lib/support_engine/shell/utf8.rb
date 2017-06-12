@@ -10,18 +10,18 @@ module SupportEngine
         #   (won't raise any errors but instead will catch all things)
         # @param command_with_options [String] command that should be executed with
         #   all the arguments and options
-        # @param options [String] options supported by SupportEngine::Shell.call
+        # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
         # @return [Hash] SupportEngine::Shell.call execution hash
-        def call(command_with_options, options = { raise_on_invalid_exit: true })
-          encode(Shell.call(command_with_options, options))
+        def call(command_with_options, raise_on_invalid_exit: true)
+          encode(Shell.call(command_with_options, raise_on_invalid_exit: raise_on_invalid_exit))
         end
 
         # @param path [String, Pathname] path to a place where git repo is
         # @param command [String] command that we want to execute in path context
-        # @param options [String] options supported by SupportEngine::Shell.call_in_path
+        # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
         # @return [Hash] SupportEngine::Shell.call execution hash
-        def call_in_path(path, command, options = { raise_on_invalid_exit: true })
-          encode(Shell.call_in_path(path, command, options))
+        def call_in_path(path, command, raise_on_invalid_exit: true)
+          encode(Shell.call_in_path(path, command, raise_on_invalid_exit: raise_on_invalid_exit))
         end
 
         private
