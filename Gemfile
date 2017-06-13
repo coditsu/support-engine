@@ -6,6 +6,8 @@ gemspec
 
 group :development, :test do
   gem 'byebug'
+  gem 'reform'
+  gem 'reform-rails'
   gem 'rspec'
   gem 'simplecov'
 end

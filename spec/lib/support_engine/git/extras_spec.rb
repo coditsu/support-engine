@@ -8,6 +8,6 @@ RSpec.describe SupportEngine::Git::Extras do
 
     it { expect(effort).to be_a(Array) }
     it { expect(effort.first).to include('lib/support_engine/git/repo_builder/base.rb') }
-    it { expect(effort.count).to eq(4) }
+    it { expect(effort.count).to eq(6) }
   end
 end
