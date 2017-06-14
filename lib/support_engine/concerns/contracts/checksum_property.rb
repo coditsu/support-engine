@@ -52,7 +52,7 @@ module SupportEngine
               cached_value = instance_variable_get(:"@#{name}")
               return cached_value if cached_value
 
-              new_value = OpenSSL::Digest::SHA256.hexdigest(values(from).join(''))
+              new_value = OpenSSL::Digest::SHA256.hexdigest(values(name, from).join(''))
               instance_variable_set(:"@#{name}", new_value)
 
               public_send(:"#{name}=", new_value)
@@ -62,10 +62,14 @@ module SupportEngine
 
         # Build values from proc or array
         # @overload values(from)
+        #   @param name [Symbol] Name of a property under which the generated value will
+        #     be stored
         #   @param from [Array<Symbol>] array with names
         # @overload values(from)
+        #   @param name [Symbol] Name of a property under which the generated value will
+        #     be stored
         #   @param from [Proc] proc that will be evaluated in the contract context
-        def values(from)
+        def values(name, from)
           if from.is_a?(Proc)
             instance_exec(&from)
           else
