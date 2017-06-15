@@ -10,29 +10,45 @@ module SupportEngine
       # state (mirror, bare, etc).
       class Base
         class << self
-          # Where should we put our test dummy repo
+          # @return [String] Where should we put our test dummy repo
           def location
             ::File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
           end
 
-          # Path to .git folder of our location
+          # @return [String] Path to .git folder of our location
           def location_git
             ::File.join(location, '.git')
           end
 
-          # Origin poiting to external location
+          # @return [String] Origin poiting to external location
           def origin
             "https://something.origin/#{name}"
           end
 
-          # Default committer
+          # @return [String] Default committer that is git compatible
+          # @example
+          #   self.committer #=> 'Committer <committer@coditsu.io>'
           def committer
             Committer.call
           end
 
-          # Return class name as underscore string
+          # @return [String] underscored name of current class without modules
+          # @example
+          #   self.name #=> 'master_mirror'
           def name
             to_s.split('::').last.underscore
+          end
+
+          # @param message [String] commit message that we want to have
+          # @param author [String] author details in git compatible format
+          # @param committed_at [Time, DateTime] time of a commit (now is the default)
+          # @return [String] git commit command with proper message, date and author
+          def commit(message, author: committer, committed_at: Time.now)
+            cmd = []
+            cmd << "GIT_COMMITTER_DATE='#{committed_at}'"
+            cmd << "git commit -m '#{message}'"
+            cmd << "--author '#{author}'"
+            cmd.join(' ')
           end
 
           # Creates a dummy repository in LOCATION with some commits and branches

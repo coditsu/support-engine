@@ -16,10 +16,12 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:committed_at) { Time.zone.parse(commit.last.strip) }
       let(:single_commit) { all.find { |cm| cm[:commit_hash] == commit_hash } }
 
-      it { expect { all }.not_to raise_error }
       it { expect(single_commit).not_to be_nil }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }
       it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
+      it 'expect to have a committed_at desc order' do
+        expect(all[0][:committed_at]).to be > all[1][:committed_at]
+      end
     end
 
     context 'when path exist but not git repo' do
@@ -51,8 +53,17 @@ RSpec.describe SupportEngine::Git::Commits do
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
 
-      it { expect { latest_by_day }.not_to raise_error }
       it { expect(latest_by_day['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
+      it 'expect to have a committed_at desc order' do
+        prev_day = nil
+        latest_by_day.each do |day, _commit_hash|
+          (prev_day = day) and next if prev_day.nil?
+          day1 = Date.parse prev_day
+          day2 = Date.parse day
+          expect(day1).to be > day2
+          prev_day = day
+        end
+      end
     end
 
     context 'when path exist but not git repo' do

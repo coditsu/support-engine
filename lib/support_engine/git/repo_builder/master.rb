@@ -11,12 +11,12 @@ module SupportEngine
           "cd #{location}",
           'echo "hash = { \'test\' => 1 }" > master.rb',
           'git add --all ./',
-          "git commit -m 'master commit' --author '#{committer}'",
+          commit('master commit', committed_at: 2.days.ago),
           'git branch different-branch',
           'git checkout different-branch',
           'touch different-branch.txt',
           'git add --all ./',
-          "git commit -m 'different-branch commit' --author '#{committer}'",
+          commit('different-branch commit'),
           'git checkout master',
           "git remote add origin #{origin}"
         ].join(' && ').freeze

@@ -7,11 +7,11 @@ module SupportEngine
       class << self
         # Fetches all commits with
         # @param path [String, Pathname] path to a place where git repo is
-        # @return [Array<String>] array with all commits hashes from repo from path
+        # @return [Array<Hash>] array with all commits hashes from repo from path
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
         # @example Run for current repo
-        #   SupportEngine::Git::Commits.all('./') #=>  ["54222...", "fb62c..."]
+        #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, since = 20.years.ago)
           cmd = [
             'git log', '--all', '--pretty="%H|%cD"', "--since=\"#{since.to_s(:db)}\""
@@ -39,7 +39,7 @@ module SupportEngine
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     { 2016-11-03"=>"7a4...", "2016-11-04"=>"a614..." }
         def latest_by_day(path)
-          command = 'git log --all --format="%ci|%H" --date=local | sort -u -k1,1'
+          command = 'git log --all --format="%ci|%H" --date=local | sort -u -r -k1,1'
           result = SupportEngine::Shell.call_in_path(path, command)
 
           raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
