@@ -52,17 +52,12 @@ RSpec.describe SupportEngine::Git::Commits do
 
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
+      let(:days_in_return_order) { latest_by_day.keys.map { |day| Date.parse(day) } }
 
       it { expect(latest_by_day['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
       it 'expect to have a committed_at desc order' do
-        prev_day = nil
-        latest_by_day.each do |day, _commit_hash|
-          (prev_day = day) and next if prev_day.nil?
-          day1 = Date.parse prev_day
-          day2 = Date.parse day
-          expect(day1).to be > day2
-          prev_day = day
-        end
+        # We compare to reverse because Ruby makes an asc sort
+        expect(days_in_return_order).to eq days_in_return_order.sort.reverse
       end
     end
 
