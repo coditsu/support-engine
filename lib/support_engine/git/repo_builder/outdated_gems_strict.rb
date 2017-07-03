@@ -8,35 +8,36 @@ module SupportEngine
         class << self
           # @return [String] Gemfile with outdated rails gem
           def gemfile
-<<-EOS
-# frozen_string_literal: true
+            <<~EOS
+              # frozen_string_literal: true
 
-source 'https://rubygems.org'
-ruby '2.4.1'
+              source 'https://rubygems.org'
+              ruby '2.4.1'
 
-gem 'bcrypt', '3.1.10'
-EOS
+              gem 'bcrypt', '3.1.10'
+            EOS
           end
 
+          # @return [String] Gemfile.lock with outdated rails gem
           def gemfile_lock
-<<-EOS
-GEM
-  remote: https://rubygems.org/
-  specs:
-    bcrypt (3.1.10)
+            <<~EOS
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  bcrypt (3.1.10)
 
-PLATFORMS
-  ruby
+              PLATFORMS
+                ruby
 
-DEPENDENCIES
-  bcrypt (= 3.1.10)
+              DEPENDENCIES
+                bcrypt (= 3.1.10)
 
-RUBY VERSION
-   ruby 2.4.1p111
+              RUBY VERSION
+                 ruby 2.4.1p111
 
-BUNDLED WITH
-   1.15.1
-EOS
+              BUNDLED WITH
+                 1.15.1
+            EOS
           end
         end
 
