@@ -28,10 +28,12 @@ module SupportEngine
         #   ["commit 68c066bb5e0dc3ef5", "Author: M..."]
         def file_last_committer(path, location)
           location = Shell.escape(location) if location
+          # We had to add "--" before the location because:
+          #   https://stackoverflow.com/questions/26349191
           Shell::Git.call_in_path(
             path,
             :log,
-            "-n 1 --word-diff=porcelain --date=raw '#{location}'"
+            "-n 1 --word-diff=porcelain --date=raw -- '#{location}'"
           )
         end
 
