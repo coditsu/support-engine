@@ -18,6 +18,7 @@ RSpec.describe SupportEngine::Git::Commits do
 
       it { expect(single_commit).not_to be_nil }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }
+      it { expect(single_commit[:branch]).to eq('different-branch') }
       it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
       it 'expect to have a committed_at desc order' do
         expect(all[0][:committed_at]).to be > all[1][:committed_at]
@@ -52,9 +53,11 @@ RSpec.describe SupportEngine::Git::Commits do
 
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
-      let(:days_in_return_order) { latest_by_day.keys.map { |day| Date.parse(day) } }
+      let(:days_in_return_order) { latest_by_day.map { |commit| commit[:committed_at] } }
+      let(:expected_hash) { '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
 
-      it { expect(latest_by_day['2017-06-06']).to eq '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
+      it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
+      it { expect(latest_by_day.last[:branch]).to eq 'master' }
       it 'expect to have a committed_at desc order' do
         # We compare to reverse because Ruby makes an asc sort
         expect(days_in_return_order).to eq days_in_return_order.sort.reverse
