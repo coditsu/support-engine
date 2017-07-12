@@ -27,7 +27,7 @@ module SupportEngine
 
           result[:stdout]
             .split('~')
-            .delete_if { |raw_commit_data| raw_commit_data.size == 0 }
+            .delete_if(&:empty?)
             .map(&method(:build_commit))
         end
 
@@ -50,7 +50,7 @@ module SupportEngine
 
           result[:stdout]
             .split('~')
-            .delete_if { |raw_commit_data| raw_commit_data.size == 0 }
+            .delete_if(&:empty?)
             .map(&method(:build_commit))
         end
 
@@ -91,12 +91,10 @@ module SupportEngine
             candidate[0] = ''
             candidate.gsub!(' origin/', '')
 
-            if candidate.start_with?('HEAD')
-              return candidate.split('HEAD -> ').last
-            else
-              candidate[0] = ''
-              return candidate
-            end
+            return candidate.split('HEAD -> ').last if candidate.start_with?('HEAD')
+
+            candidate[0] = ''
+            return candidate
           end
 
           nil
