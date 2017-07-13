@@ -75,5 +75,25 @@ RSpec.describe SupportEngine::Git::Commits do
 
       it { expect { latest_by_day }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
+
+    context 'when we want limited number of commits' do
+      # on local machines timezone is in CET and Time.zone.now returns UTC
+      subject(:latest_by_day) { described_class.latest_by_day(path, Time.zone.now + 6.hours) }
+
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
+
+      # There won't be any commits from now
+      it { expect(latest_by_day.size).to eq(0) }
+    end
+
+    context 'when we start on a given day' do
+      # on local machines timezone is in CET and Time.zone.now returns UTC
+      subject(:latest_by_day) { described_class.latest_by_day(path, 1.day.ago) }
+
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
+
+      # There won't be any commits from now
+      it { expect(latest_by_day.size).to eq(1) }
+    end
   end
 end

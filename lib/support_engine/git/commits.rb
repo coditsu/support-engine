@@ -10,6 +10,7 @@ module SupportEngine
       class << self
         # Fetches all commits with additional details like date and branch
         # @param path [String, Pathname] path to a place where git repo is
+        # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with all commits hashes from repo from path
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
@@ -33,15 +34,18 @@ module SupportEngine
 
         # Fetches newest commit for each day with day details
         # @param path [String, Pathname] path to a place where git repo is
+        # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with the most recent commits per day in desc order
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path)
+        def latest_by_day(path, since = 20.years.ago)
           cmd = [
-            'git log --all --format="~%ci|%H" --date=local | sort -u -r -k1,1',
+            'git log --all --format="~%ci|%H"',
+            "--since=\"#{since.to_s(:db)}\"",
+            '--date=local | sort -u -r -k1,1',
             '| awk -F \'|\' \'{print $0; system("git branch -a --contains " $4)}\''
           ].join(' ')
 
