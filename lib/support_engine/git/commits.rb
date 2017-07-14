@@ -11,19 +11,21 @@ module SupportEngine
         # Fetches all commits with additional details like date and branch
         # @param path [String, Pathname] path to a place where git repo is
         # @param since [Date] the earliest day for which we return data
+        # @param limit [Integer] for how many commits  do we want log (1 for current)
         # @return [Array<Hash>] array with all commits hashes from repo from path
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
-        def all(path, since: 20.years.ago)
+        def all(path, since: 20.years.ago, limit: nil)
           cmd = [
             'git log --all --format="~%cD|%H"',
             "--since=\"#{since.to_s(:db)}\"",
+            limit ? "-n#{limit}" : '',
             '| awk -F \'|\' \'{print $0; system("git branch -a --contains " $4)}\''
-          ].join(' ')
+          ]
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
+          result = SupportEngine::Shell.call_in_path(path, cmd.join(' '))
           fail_if_invalid(result)
 
           result[:stdout]

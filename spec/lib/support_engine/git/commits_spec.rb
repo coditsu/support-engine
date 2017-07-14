@@ -37,7 +37,7 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect { all }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
 
-    context 'when we want limited number of commits' do
+    context 'when we want limited number of commits by time' do
       # on local machines timezone is in CET and Time.zone.now returns UTC
       subject(:all) { described_class.all(path, since: since) }
 
@@ -46,6 +46,16 @@ RSpec.describe SupportEngine::Git::Commits do
 
       # There won't be any commits from now
       it { expect(all.size).to eq(0) }
+    end
+
+    context 'when we want limited number of commits by amount' do
+      # on local machines timezone is in CET and Time.zone.now returns UTC
+      subject(:all) { described_class.all(path, limit: 1) }
+
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
+
+      # There won't be any commits from now
+      it { expect(all.size).to eq(1) }
     end
   end
 
