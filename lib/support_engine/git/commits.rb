@@ -97,7 +97,8 @@ module SupportEngine
             candidate[0] = ''
             # When we are checkout out on a particular commit, it can show a detach, and we
             # need to ignore it
-            next if candidate.start_with?(' (detached from')
+            next if candidate.start_with?('(HEAD detached')
+
             candidate.gsub!(' origin/', '')
 
             return candidate.split('HEAD -> ').last if candidate.start_with?('HEAD')
