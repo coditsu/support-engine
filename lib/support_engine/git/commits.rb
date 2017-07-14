@@ -93,17 +93,20 @@ module SupportEngine
         # @return [String, nil] nil if no branch detected for a given commit or a branch name
         #   if found
         def resolve_branch(candidates)
+          name = ''
+
           candidates.each do |candidate|
             # We ignore detach information
             next if candidate.start_with?('*')
+            next unless candidate.start_with?('  remotes/origin/')
 
             candidate.gsub!('  remotes/origin/', '')
 
-            return candidate.split('HEAD -> ').last if candidate.start_with?('HEAD')
-            return candidate
+            return candidate.split('HEAD -> origin/').last if candidate.start_with?('HEAD')
+            name = candidate
           end
 
-          ''
+          name
         end
       end
     end
