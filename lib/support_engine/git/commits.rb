@@ -94,16 +94,12 @@ module SupportEngine
         #   if found
         def resolve_branch(candidates)
           candidates.each do |candidate|
-            candidate[0] = ''
-            # When we are checkout out on a particular commit, it can show a detach, and we
-            # need to ignore it
-            next if candidate.start_with?('(HEAD detached')
+            # We ignore detach information
+            next if candidate.start_with?('*')
 
-            candidate.gsub!(' origin/', '')
+            candidate.gsub!('  remotes/origin/', '')
 
             return candidate.split('HEAD -> ').last if candidate.start_with?('HEAD')
-
-            candidate[0] = ''
             return candidate
           end
 
