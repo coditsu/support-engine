@@ -19,7 +19,7 @@ module SupportEngine
         #   "  Gemfile.lock................................. 8           7",
         #   "  path      ..."
         # ]
-        def effort(path, since, above = 10)
+        def effort(path, since:, above: 10)
           options = []
           options << "--above #{above}"
           options << '--'

@@ -40,8 +40,6 @@ module SupportEngine
         # Runs a git log with --shortstats option
         # @param path [String] path of a current repository build
         # @param limit [Integer, nil] number of lines that we want
-        # @param commit [String, nil] commit name or nil if we want shortstat for all
-        #   commits
         # @return [Array<String>] Lines returned by the git log --shortstat command
         # @example
         #   SupportEngine::Git::Log.shortstat('./', 2) #=>
@@ -49,12 +47,12 @@ module SupportEngine
         #     '4 files changed, 13 insertions(+), 36 deletions(-)',
         #     'ab7928cc003e2306c9d7ec729fb1d87e808337c0 ninshiki'
         #   ]
-        def shortstat(path, limit = nil, commit = nil)
+        def shortstat(path, limit: nil, since: 20.years.ago)
           options = []
           options << '--shortstat'
+          options << "--since=\"#{since.to_s(:db)}\""
           options << '--format="oneline"'
           options << "-n#{limit}" if limit
-          options << commit if commit
 
           Shell::Git.call_in_path(path, :log, options.join(' '))
         end

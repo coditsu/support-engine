@@ -16,7 +16,7 @@ module SupportEngine
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
-        def all(path, since = 20.years.ago)
+        def all(path, since: 20.years.ago)
           cmd = [
             'git log --all --format="~%cD|%H"',
             "--since=\"#{since.to_s(:db)}\"",
@@ -41,7 +41,7 @@ module SupportEngine
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path, since = 20.years.ago)
+        def latest_by_day(path, since: 20.years.ago)
           cmd = [
             'git log --all --format="~%ci|%H"',
             "--since=\"#{since.to_s(:db)}\"",

@@ -2,7 +2,13 @@
 
 RSpec.describe SupportEngine::Git::Extras do
   describe '.effort' do
-    subject(:effort) { described_class.effort(path, Time.zone.now - 1.month, 5) }
+    subject(:effort) do
+      described_class.effort(
+        path,
+        since: Time.zone.now - 1.month,
+        above: 5
+      )
+    end
 
     let(:path) { SupportEngine::Git::RepoBuilder::MasterWithHistory.location }
 
