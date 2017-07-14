@@ -103,7 +103,7 @@ module SupportEngine
             return candidate
           end
 
-          nil
+          ''
         end
       end
     end
