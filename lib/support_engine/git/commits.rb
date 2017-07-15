@@ -4,8 +4,8 @@ module SupportEngine
   module Git
     # Module for handling commits
     # @note We use a trick here to group single commit data (that due to branches is multiline)
-    #   we use '~' as a separator to distinguish between separate commits data (\n is not enough)
-    #   Branches cannot have '~' in their names so we can use it without any risk
+    #   we use '~' and '^' as a separators to distinguish between separate commits data (\n is not enough)
+    #   Branches cannot have '~' and '^' in their names so we can use it without any risk.
     module Commits
       class << self
         # Fetches all commits with additional details like date and branch
@@ -19,10 +19,10 @@ module SupportEngine
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, since: 20.years.ago, limit: nil)
           cmd = [
-            'git log --all --format="~%cD|%H"',
+            'git log --all --format="~%cD^%H"',
             "--since=\"#{since.to_s(:db)}\"",
             limit ? "-n#{limit}" : '',
-            '| awk -F \'|\' \'{print $0; system("git for-each-ref --contains " $2)}\''
+            '| awk -F \'^\' \'{print $0; system("git for-each-ref --contains " $2)}\''
           ]
 
           result = SupportEngine::Shell.call_in_path(path, cmd.join(' '))
@@ -36,7 +36,7 @@ module SupportEngine
           result[:stdout]
             .split('~')
             .delete_if(&:empty?)
-            .map { |commit| build_commit(commit, head) }
+            .map! { |commit| build_commit(commit, head) }
         end
 
         # Fetches newest commit for each day with day details
@@ -51,7 +51,7 @@ module SupportEngine
         #     [{:commit_hash=>"421cd..."]
         def latest_by_day(path, since: 20.years.ago)
           cmd = [
-            'git log --all --format="%ci|%H"',
+            'git log --all --format="%ci^%H"',
             "--since=\"#{since.to_s(:db)}\"",
             '--date=local | sort -u -r -k1,1'
           ].join(' ')
@@ -62,7 +62,30 @@ module SupportEngine
           result[:stdout]
             .split("\n")
             .delete_if(&:empty?)
-            .map { |commit| build_commit(commit, nil) }
+            .map! { |commit| build_commit(commit, nil) }
+        end
+
+        # Fetches newest commit for each branch that is in the repository (for its current state)
+        # @param path [String, Pathname] path to a place where git repo is
+        # @return [Array<Hash>] array with the latest commit per each branch
+        # @raise [Errors::FailedShellCommand] raised when anything went wrong
+        def latest_by_branch(path)
+          cmd = [
+            'git for-each-ref refs/ --format=\'%(committerdate)^%(objectname)^:%(refname)\'',
+            ' | grep \'heads\|remotes\' | grep -v HEAD | awk -F \'^\' \'!x[$1]++\''
+          ].join(' ')
+
+          result = SupportEngine::Shell.call_in_path(path, cmd)
+          fail_if_invalid(result)
+
+          # We fake head here, because otherwise it would return nil as it would catch
+          # into the head detection loop (this is a cornercase because latest by branch
+          # has a different bash git command)
+          result[:stdout]
+            .split("\n")
+            .delete_if(&:empty?)
+            .map! { |commit| commit.split('^:').join("\n") }
+            .map! { |commit| build_commit(commit, ':') }
         end
 
         private
@@ -81,7 +104,7 @@ module SupportEngine
         # @return [Hash] hash with commit details (commit hash, date and branch)
         def build_commit(raw_commit_data, head)
           data = raw_commit_data.split("\n")
-          base = data.shift.split('|')
+          base = data.shift.split('^')
 
           {
             commit_hash: base[1],

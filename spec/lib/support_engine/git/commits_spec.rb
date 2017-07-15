@@ -110,4 +110,32 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect(latest_by_day.size).to eq(1) }
     end
   end
+
+  describe '.latest_by_branch' do
+    subject(:latest_by_branch) { described_class.latest_by_branch(path) }
+
+    context 'when path exist and git repo' do
+      let(:path) { Pathname.new './' }
+      let(:branches) { latest_by_branch.map { |commit| commit[:branch] } }
+      let(:expected_hash) { 'cb7d860b6a62dbd31b065953fee5e89b7b748c01' }
+
+      it { expect(latest_by_branch.last[:commit_hash]).to eq expected_hash }
+      it { expect(latest_by_branch.last[:branch]).to eq 'git-repo-builder-outdated-gems' }
+      it 'expect to have unique branches' do
+        expect(branches).to eq branches.uniq
+      end
+    end
+
+    context 'when path exist but not git repo' do
+      let(:path) { Pathname.new '/' }
+
+      it { expect { latest_by_branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
+    end
+
+    context 'when path does not exist' do
+      let(:path) { Pathname.new "/#{rand}" }
+
+      it { expect { latest_by_branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
+    end
+  end
 end
