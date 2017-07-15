@@ -102,8 +102,7 @@ module SupportEngine
 
           # We prioritize head branches as main branches of a commit if they are in the head
           return head if candidates.any? do |candidate|
-            candidate.include?('origin/HEAD')
-            candidate.include?("refs/heads/#{head}")
+            candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
           end
 
           # First we select only those branches that not only contain but have our commit as
