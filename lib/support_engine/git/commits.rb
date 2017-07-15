@@ -4,8 +4,9 @@ module SupportEngine
   module Git
     # Module for handling commits
     # @note We use a trick here to group single commit data (that due to branches is multiline)
-    #   we use '~' and '^' as a separators to distinguish between separate commits data (\n is not enough)
-    #   Branches cannot have '~' and '^' in their names so we can use it without any risk.
+    #   we use '~' and '^' as a separators to distinguish between separate commits data because
+    #   (\n is not enough). Branches cannot have '~' and '^' in their names so we can use it
+    #   without any risk.
     module Commits
       class << self
         # Fetches all commits with additional details like date and branch
