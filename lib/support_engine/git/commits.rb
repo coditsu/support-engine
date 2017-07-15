@@ -22,7 +22,7 @@ module SupportEngine
             'git log --all --format="~%cD|%H"',
             "--since=\"#{since.to_s(:db)}\"",
             limit ? "-n#{limit}" : '',
-            '| awk -F \'|\' \'{print $0; system("git branch -a --contains " $4)}\''
+            '| awk -F \'|\' \'{print $0; system("git for-each-ref --contains " $2)}\''
           ]
 
           result = SupportEngine::Shell.call_in_path(path, cmd.join(' '))
@@ -39,23 +39,23 @@ module SupportEngine
         # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with the most recent commits per day in desc order
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
+        # @note latest_by_day does not contain a branch name
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
         def latest_by_day(path, since: 20.years.ago)
           cmd = [
-            'git log --all --format="~%ci|%H"',
+            'git log --all --format="%ci|%H"',
             "--since=\"#{since.to_s(:db)}\"",
-            '--date=local | sort -u -r -k1,1',
-            '| awk -F \'|\' \'{print $0; system("git branch -a --contains " $4)}\''
+            '--date=local | sort -u -r -k1,1'
           ].join(' ')
 
           result = SupportEngine::Shell.call_in_path(path, cmd)
           fail_if_invalid(result)
 
           result[:stdout]
-            .split('~')
+            .split("\n")
             .delete_if(&:empty?)
             .map(&method(:build_commit))
         end
@@ -81,7 +81,7 @@ module SupportEngine
           {
             commit_hash: base[1],
             committed_at: Time.zone.parse(base[0]),
-            branch: resolve_branch(data)
+            branch: resolve_branch(data, base[1])
           }
         end
 
@@ -89,24 +89,27 @@ module SupportEngine
         # When we clone from remote bare repository, we get branches with the origin/ prefix
         # and head pointer. Based on that we resolve to the head branch or we pick first one
         # from the list
-        # @param candidates [Array<String>] array with branch names
+        # @param each_ref [Array<String>] array with for-each-ref results
         # @return [String, nil] nil if no branch detected for a given commit or a branch name
         #   if found
-        def resolve_branch(candidates)
-          name = ''
+        def resolve_branch(each_ref, commit_hash)
+          # First we select only those branches that not only contain but have our commit as
+          # the last one (when we are checkout it will work like that as well)
+          candidates = each_ref.select { |ref| ref.start_with?(commit_hash) }
+          # We pick only the branch name part as the bash command result contains some noise
+          candidates.map! { |candidate| candidate.split("\t").last }
+          # We remove head reference as it does not tell us anything
+          candidates.delete_if { |candidate| candidate.start_with?('refs/remotes/origin/HEAD') }
 
-          candidates.each do |candidate|
-            # We ignore detach information
-            next if candidate.start_with?('*')
-            next unless candidate.start_with?('  remotes/origin/')
-
-            candidate.gsub!('  remotes/origin/', '')
-
-            return candidate.split('HEAD -> origin/').last if candidate.start_with?('HEAD')
-            name = candidate
-          end
-
-          name
+          # And we pick the first one with and sanitize it to get only the branch name
+          candidates
+            .first
+            .to_s
+            .tap do |candidate|
+              candidate.gsub!('refs/remotes/origin/', '')
+              candidate.gsub!('refs/remotes/', '')
+              candidate.gsub!('refs/heads/', '')
+            end
         end
       end
     end
