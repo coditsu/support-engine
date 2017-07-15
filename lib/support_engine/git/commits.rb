@@ -31,7 +31,7 @@ module SupportEngine
           # We need to know the main head of the repo, for branch picking
           # In case there are multiple branches containing same commit, we prioritize
           # head as the owner of a commit
-          head = Ref.head(path)[:stdout].gsub("\n", '')
+          head = Ref.head(path)[:stdout].delete("\n")
 
           result[:stdout]
             .split('~')
