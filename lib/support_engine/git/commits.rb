@@ -107,25 +107,24 @@ module SupportEngine
           data = raw_commit_data.split("\n")
           base = data.shift.split('^')
 
-          {
+          resolve_branch_and_pull_request(data, base[1], head).merge(
             commit_hash: base[1],
-            committed_at: Time.zone.parse(base[0]),
-            branch: resolve_branch(data, base[1], head)
-          }
+            committed_at: Time.zone.parse(base[0])
+          )
         end
 
-        # Figures out the commit branch based on the candidates (if multiple)
+        # Figures out the commit branch based on the candidates (if multiple) and if this branch
+        # is an external pull request branch from an external source (local pull request that
+        # are committed in the same repo are not distinguishable from other normal branches)
         # When we clone from remote bare repository, we get branches with the origin/ prefix
         # and head pointer. Based on that we resolve to the head branch or we pick first one
         # from the list
         # @param each_ref [Array<String>] array with for-each-ref results
         # @return [String, nil] nil if no branch detected for a given commit or a branch name
         #   if found
-        def resolve_branch(each_ref, commit_hash, head)
-          candidates = each_ref
-
+        def resolve_branch_and_pull_request(each_ref, commit_hash, head)
           # We prioritize head branches as main branches of a commit if they are in the head
-          return head if candidates.any? do |candidate|
+          return { branch: head, external_pull_request: false } if each_ref.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
           end
 
@@ -140,7 +139,7 @@ module SupportEngine
           candidates.map! { |candidate| candidate.split("\t").last }
 
           # And we pick the first one with and sanitize it to get only the branch name
-          candidates
+          branch = candidates
             .first
             .to_s
             .tap do |candidate|
@@ -148,6 +147,8 @@ module SupportEngine
               candidate.gsub!('refs/remotes/', '')
               candidate.gsub!('refs/heads/', '')
             end
+
+          { branch: branch, external_pull_request: branch.include?('refs/pull') }
         end
       end
     end

@@ -17,6 +17,7 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:single_commit) { all.find { |cm| cm[:commit_hash] == commit_hash } }
 
       it { expect(single_commit).not_to be_nil }
+      it { expect(single_commit[:external_pull_request]).to eq false }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }
       it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
       it { expect(single_commit[:branch]).to eq('master') }
@@ -67,6 +68,7 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:days_in_return_order) { latest_by_day.map { |commit| commit[:committed_at] } }
       let(:expected_hash) { '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
 
+      it { expect(latest_by_day.last[:external_pull_request]).to eq false }
       it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
       # This command does not return a branch name
       it { expect(latest_by_day.last[:branch]).to eq '' }
@@ -119,8 +121,9 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:branches) { latest_by_branch.map { |commit| commit[:branch] } }
       let(:expected_hash) { 'cb7d860b6a62dbd31b065953fee5e89b7b748c01' }
 
-      it { expect(latest_by_branch.last[:commit_hash]).to eq expected_hash }
-      it { expect(latest_by_branch.last[:branch]).to eq 'git-repo-builder-outdated-gems' }
+      it { expect(latest_by_branch.last[:external_pull_request]).to eq false }
+      it { expect(latest_by_branch.map { |b| b[:branch] }).to include 'git-repo-builder-outdated-gems' }
+      it { expect(latest_by_branch.map { |b| b[:commit_hash] }).to include expected_hash }
       it 'expect to have unique branches' do
         expect(branches).to eq branches.uniq
       end
