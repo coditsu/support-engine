@@ -161,6 +161,9 @@ module SupportEngine
           { branch: branch, external_pull_request: branch.include?('pull') }
         end
 
+        # Removes unwanted prefixes from branch name
+        # @param branch [String] branch name
+        # @return [String] sanitized same branch name
         def sanitize_branch(branch)
           UNWANTED_PREFIXES.each { |prefix| branch.gsub!(prefix, '') }
           branch
