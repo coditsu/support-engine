@@ -44,6 +44,10 @@ module SupportEngine
           # head as the owner of a commit
           head = Ref.head(path)[:stdout].delete("\n")
 
+          # If the head points to HEAD it means that the repo is in the detach state
+          # and we need to pick the latest ref to get a head branch
+          head = head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
+
           result[:stdout]
             .split('~')
             .delete_if(&:empty?)
@@ -152,11 +156,14 @@ module SupportEngine
           branch = candidates
                    .first
                    .to_s
-                   .tap do |candidate|
-                     UNWANTED_PREFIXES.each { |prefix| candidate.gsub!(prefix, '') }
-                   end
+                   .tap(&method(:sanitize_branch))
 
           { branch: branch, external_pull_request: branch.include?('pull') }
+        end
+
+        def sanitize_branch(branch)
+          UNWANTED_PREFIXES.each { |prefix| branch.gsub!(prefix, '') }
+          branch
         end
       end
     end
