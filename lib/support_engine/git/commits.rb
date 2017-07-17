@@ -8,12 +8,15 @@ module SupportEngine
     #   (\n is not enough). Branches cannot have '~' and '^' in their names so we can use it
     #   without any risk.
     module Commits
+      # When we want to resolve branches, we do that based on refs. Refs containt
+      # name prefixes that we don't need so this is a map of prefixes that we have to remove
+      # in order to get proper branch names
       UNWANTED_PREFIXES = %w[
         refs/remotes/origin/
         refs/remotes/
         refs/heads/
         refs/
-      ]
+      ].freeze
 
       class << self
         # Fetches all commits with additional details like date and branch
@@ -147,11 +150,11 @@ module SupportEngine
 
           # And we pick the first one with and sanitize it to get only the branch name
           branch = candidates
-            .first
-            .to_s
-            .tap do |candidate|
-              UNWANTED_PREFIXES.each { |prefix| candidate.gsub!(prefix, '') }
-            end
+                   .first
+                   .to_s
+                   .tap do |candidate|
+                     UNWANTED_PREFIXES.each { |prefix| candidate.gsub!(prefix, '') }
+                   end
 
           { branch: branch, external_pull_request: branch.include?('pull') }
         end
