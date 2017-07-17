@@ -8,6 +8,13 @@ module SupportEngine
     #   (\n is not enough). Branches cannot have '~' and '^' in their names so we can use it
     #   without any risk.
     module Commits
+      UNWANTED_PREFIXES = %w[
+        refs/remotes/origin/
+        refs/remotes/
+        refs/heads/
+        refs/
+      ]
+
       class << self
         # Fetches all commits with additional details like date and branch
         # @param path [String, Pathname] path to a place where git repo is
@@ -73,7 +80,7 @@ module SupportEngine
         def latest_by_branch(path)
           cmd = [
             'git for-each-ref refs/ --format=\'%(committerdate)^%(objectname)^:%(refname)\'',
-            ' | grep \'heads\|remotes\' | grep -v HEAD | awk -F \'^\' \'!x[$1]++\''
+            ' | grep \'heads\|remotes\|pull\' | grep -v HEAD | awk -F \'^\' \'!x[$1]++\''
           ].join(' ')
 
           result = SupportEngine::Shell.call_in_path(path, cmd)
@@ -143,12 +150,10 @@ module SupportEngine
             .first
             .to_s
             .tap do |candidate|
-              candidate.gsub!('refs/remotes/origin/', '')
-              candidate.gsub!('refs/remotes/', '')
-              candidate.gsub!('refs/heads/', '')
+              UNWANTED_PREFIXES.each { |prefix| candidate.gsub!(prefix, '') }
             end
 
-          { branch: branch, external_pull_request: branch.include?('refs/pull') }
+          { branch: branch, external_pull_request: branch.include?('pull') }
         end
       end
     end

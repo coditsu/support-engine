@@ -117,13 +117,11 @@ RSpec.describe SupportEngine::Git::Commits do
     subject(:latest_by_branch) { described_class.latest_by_branch(path) }
 
     context 'when path exist and git repo' do
-      let(:path) { Pathname.new './' }
+      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
       let(:branches) { latest_by_branch.map { |commit| commit[:branch] } }
-      let(:expected_hash) { 'cb7d860b6a62dbd31b065953fee5e89b7b748c01' }
 
       it { expect(latest_by_branch.last[:external_pull_request]).to eq false }
-      it { expect(latest_by_branch.map { |b| b[:branch] }).to include 'git-repo-builder-outdated-gems' }
-      it { expect(latest_by_branch.map { |b| b[:commit_hash] }).to include expected_hash }
+      it { expect(latest_by_branch.map { |b| b[:branch] }).to include 'different-branch' }
       it 'expect to have unique branches' do
         expect(branches).to eq branches.uniq
       end
