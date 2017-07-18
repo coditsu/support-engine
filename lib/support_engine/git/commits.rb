@@ -18,6 +18,14 @@ module SupportEngine
         refs/
       ].freeze
 
+      # When commit is present in multiple branches, those branches have priority in terms of being
+      # returned as the main branch of the commit
+      PRIORITIZED_BRANCHES = %w[
+        master
+        develop
+        release
+      ]
+
       class << self
         # Fetches all commits with additional details like date and branch
         # @param path [String, Pathname] path to a place where git repo is
@@ -30,13 +38,15 @@ module SupportEngine
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, since: 20.years.ago, limit: nil)
           cmd = [
-            'git log --all --format="~%cD^%H"',
+            'git log --all --no-merges --format="~%ci^%H"',
             "--since=\"#{since.to_s(:db)}\"",
             limit ? "-n#{limit}" : '',
-            '| awk -F \'^\' \'{print $0; system("git for-each-ref --contains " $2)}\''
+            '| awk -F \'^\' \'{print $0; system("git for-each-ref --contains " $2)}\'',
+            '| grep -v \'refs/pull/\' | cat'
           ]
 
           result = SupportEngine::Shell.call_in_path(path, cmd.join(' '))
+
           fail_if_invalid(result)
 
           # We need to know the main head of the repo, for branch picking
@@ -52,6 +62,7 @@ module SupportEngine
             .split('~')
             .delete_if(&:empty?)
             .map! { |commit| build_commit(commit, head) }
+            .delete_if { |commit| commit[:branch].empty? }
         end
 
         # Fetches newest commit for each day with day details
@@ -66,9 +77,11 @@ module SupportEngine
         #     [{:commit_hash=>"421cd..."]
         def latest_by_day(path, since: 20.years.ago)
           cmd = [
-            'git log --all --format="%ci^%H"',
+            'git log --all --no-merges --format="%ci^%H"',
             "--since=\"#{since.to_s(:db)}\"",
-            '--date=local | sort -u -r -k1,1'
+            '--date=local',
+            '| grep -v \'refs/pull\'',
+            '| sort -u -r -k1,1'
           ].join(' ')
 
           result = SupportEngine::Shell.call_in_path(path, cmd)
@@ -87,7 +100,10 @@ module SupportEngine
         def latest_by_branch(path)
           cmd = [
             'git for-each-ref refs/ --format=\'%(committerdate)^%(objectname)^:%(refname)\'',
-            ' | grep \'heads\|remotes\|pull\' | grep -v HEAD | awk -F \'^\' \'!x[$1]++\''
+            '| grep \'heads\|remotes\'',
+            '| grep -v HEAD',
+            '| grep -v \'refs/pull\'',
+            '| awk -F \'^\' \'!x[$1]++\''
           ].join(' ')
 
           result = SupportEngine::Shell.call_in_path(path, cmd)
@@ -101,6 +117,7 @@ module SupportEngine
             .delete_if(&:empty?)
             .map! { |commit| commit.split('^:').join("\n") }
             .map! { |commit| build_commit(commit, ':') }
+            .delete_if { |commit| commit[:branch].empty? }
         end
 
         private
@@ -121,24 +138,22 @@ module SupportEngine
           data = raw_commit_data.split("\n")
           base = data.shift.split('^')
 
-          resolve_branch_and_pull_request(data, base[1], head).merge(
+          resolve_branch(data, base[1], head).merge(
             commit_hash: base[1],
             committed_at: Time.zone.parse(base[0])
           )
         end
 
-        # Figures out the commit branch based on the candidates (if multiple) and if this branch
-        # is an external pull request branch from an external source (local pull request that
-        # are committed in the same repo are not distinguishable from other normal branches)
+        # Figures out the commit branch based on the candidates (if multiple)
         # When we clone from remote bare repository, we get branches with the origin/ prefix
         # and head pointer. Based on that we resolve to the head branch or we pick first one
         # from the list
         # @param each_ref [Array<String>] array with for-each-ref results
         # @return [String, nil] nil if no branch detected for a given commit or a branch name
         #   if found
-        def resolve_branch_and_pull_request(each_ref, commit_hash, head)
+        def resolve_branch(each_ref, commit_hash, head)
           # We prioritize head branches as main branches of a commit if they are in the head
-          return { branch: head, external_pull_request: false } if each_ref.any? do |candidate|
+          return { branch: head } if each_ref.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
           end
 
@@ -152,13 +167,16 @@ module SupportEngine
           # We pick only the branch name part as the bash command result contains some noise
           candidates.map! { |candidate| candidate.split("\t").last }
 
-          # And we pick the first one with and sanitize it to get only the branch name
-          branch = candidates
-                   .first
-                   .to_s
-                   .tap(&method(:sanitize_branch))
+          branch = candidates.find do |candidate|
+            PRIORITIZED_BRANCHES.any? { |pb| candidate.include?(pb) }
+          end
 
-          { branch: branch, external_pull_request: branch.include?('pull') }
+          branch ||= candidates.first.to_s
+
+          # And we pick the first one with and sanitize it to get only the branch name
+          branch.tap(&method(:sanitize_branch))
+
+          { branch: branch }
         end
 
         # Removes unwanted prefixes from branch name
