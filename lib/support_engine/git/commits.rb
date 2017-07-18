@@ -172,7 +172,7 @@ module SupportEngine
           end
 
           # And we pick the first one with and sanitize it to get only the branch name
-         (branch || candidates.first).tap(&method(:sanitize_branch))
+          (branch || candidates.first).tap(&method(:sanitize_branch))
         end
 
         # Removes unwanted prefixes from branch name
