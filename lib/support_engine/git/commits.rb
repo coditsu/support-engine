@@ -171,10 +171,8 @@ module SupportEngine
             PRIORITIZED_BRANCHES.any? { |pb| candidate.include?(pb) }
           end
 
-          branch ||= candidates.first.to_s
-
           # And we pick the first one with and sanitize it to get only the branch name
-          branch.tap(&method(:sanitize_branch))
+         (branch || candidates.first).tap(&method(:sanitize_branch))
         end
 
         # Removes unwanted prefixes from branch name
