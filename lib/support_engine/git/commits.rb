@@ -62,12 +62,13 @@ module SupportEngine
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path)
+        def latest_by_day(path, since: 20.years.ago)
           cmd = [
             'git log',
             '--all',
             '--format="%ci|%H"',
             '--date=local',
+            "--since=\"#{since.to_s(:db)}\"",
             '| sort -u -r -k1,1'
           ].join(' ')
 
