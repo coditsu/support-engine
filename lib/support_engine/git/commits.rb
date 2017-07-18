@@ -4,29 +4,28 @@ module SupportEngine
   module Git
     # Module for handling commits
     module Commits
+      # When we want to resolve branches, we do that based on refs. Refs containt
+      # name prefixes that we don't need so this is a map of prefixes that we have to remove
+      # in order to get proper branch names
+      UNWANTED_PREFIXES = %w[
+        refs/remotes/origin/
+        refs/remotes/
+        refs/heads/
+        refs/
+      ].freeze
+
+      # When commit is present in multiple branches, those branches have priority in terms
+      # of being returned as the main branch of the commit
+      PRIORITIZED_BRANCHES = %w[
+        master
+        develop
+        release
+      ].freeze
+
       class << self
-        # When we want to resolve branches, we do that based on refs. Refs containt
-        # name prefixes that we don't need so this is a map of prefixes that we have to remove
-        # in order to get proper branch names
-        UNWANTED_PREFIXES = %w[
-          refs/remotes/origin/
-          refs/remotes/
-          refs/heads/
-          refs/
-        ].freeze
-
-        # When commit is present in multiple branches, those branches have priority in terms of being
-        # returned as the main branch of the commit
-        PRIORITIZED_BRANCHES = %w[
-          master
-          develop
-          release
-        ]
-
         # Fetches all commits with additional details like date
         # @param path [String, Pathname] path to a place where git repo is
         # @param since [Date] the earliest day for which we return data
-        # @param limit [Integer] for how many commits  do we want log (1 for current)
         # @return [Array<Hash>] array with all commits hashes from repo from path
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
@@ -34,8 +33,7 @@ module SupportEngine
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, since: 20.years.ago)
           cmd = [
-            'git log',
-            '--all',
+            'git log --all',
             '--pretty="%cD|%H"',
             '--no-merges',
             "--since=\"#{since.to_s(:db)}\""
@@ -64,10 +62,8 @@ module SupportEngine
         #     [{:commit_hash=>"421cd..."]
         def latest_by_day(path, since: 20.years.ago)
           cmd = [
-            'git log',
-            '--all',
+            'git log --all --date=local',
             '--format="%ci|%H"',
-            '--date=local',
             "--since=\"#{since.to_s(:db)}\"",
             '| sort -u -r -k1,1'
           ].join(' ')
