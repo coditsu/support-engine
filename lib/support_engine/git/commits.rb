@@ -3,31 +3,27 @@
 module SupportEngine
   module Git
     # Module for handling commits
-    # @note We use a trick here to group single commit data (that due to branches is multiline)
-    #   we use '~' and '^' as a separators to distinguish between separate commits data because
-    #   (\n is not enough). Branches cannot have '~' and '^' in their names so we can use it
-    #   without any risk.
     module Commits
-      # When we want to resolve branches, we do that based on refs. Refs containt
-      # name prefixes that we don't need so this is a map of prefixes that we have to remove
-      # in order to get proper branch names
-      UNWANTED_PREFIXES = %w[
-        refs/remotes/origin/
-        refs/remotes/
-        refs/heads/
-        refs/
-      ].freeze
-
-      # When commit is present in multiple branches, those branches have priority in terms of being
-      # returned as the main branch of the commit
-      PRIORITIZED_BRANCHES = %w[
-        master
-        develop
-        release
-      ]
-
       class << self
-        # Fetches all commits with additional details like date and branch
+        # When we want to resolve branches, we do that based on refs. Refs containt
+        # name prefixes that we don't need so this is a map of prefixes that we have to remove
+        # in order to get proper branch names
+        UNWANTED_PREFIXES = %w[
+          refs/remotes/origin/
+          refs/remotes/
+          refs/heads/
+          refs/
+        ].freeze
+
+        # When commit is present in multiple branches, those branches have priority in terms of being
+        # returned as the main branch of the commit
+        PRIORITIZED_BRANCHES = %w[
+          master
+          develop
+          release
+        ]
+
+        # Fetches all commits with additional details like date
         # @param path [String, Pathname] path to a place where git repo is
         # @param since [Date] the earliest day for which we return data
         # @param limit [Integer] for how many commits  do we want log (1 for current)
@@ -36,33 +32,25 @@ module SupportEngine
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
-        def all(path, since: 20.years.ago, limit: nil)
+        def all(path, since: 20.years.ago)
           cmd = [
-            'git log --all --no-merges --format="~%ci^%H"',
-            "--since=\"#{since.to_s(:db)}\"",
-            limit ? "-n#{limit}" : '',
-            '| awk -F \'^\' \'{print $0; system("git for-each-ref --contains " $2)}\'',
-            '| grep -v \'refs/pull/\' | cat'
-          ]
+            'git log',
+            '--all',
+            '--pretty="%cD|%H"',
+            '--no-merges',
+            "--since=\"#{since.to_s(:db)}\""
+          ].join(' ')
 
-          result = SupportEngine::Shell.call_in_path(path, cmd.join(' '))
-
+          result = SupportEngine::Shell.call_in_path(path, cmd)
           fail_if_invalid(result)
 
-          # We need to know the main head of the repo, for branch picking
-          # In case there are multiple branches containing same commit, we prioritize
-          # head as the owner of a commit
-          head = Ref.head(path)[:stdout].delete("\n")
-
-          # If the head points to HEAD it means that the repo is in the detach state
-          # and we need to pick the latest ref to get a head branch
-          head = head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
-
-          result[:stdout]
-            .split('~')
-            .delete_if(&:empty?)
-            .map! { |commit| build_commit(commit, head) }
-            .delete_if { |commit| commit[:branch].empty? }
+          base = result[:stdout].split("\n")
+          base.map! do |details|
+            data = details.split('|')
+            { commit_hash: data[1], committed_at: Time.zone.parse(data[0]) }
+          end
+          base.uniq! { |h| h[:commit_hash] }
+          base
         end
 
         # Fetches newest commit for each day with day details
@@ -70,30 +58,33 @@ module SupportEngine
         # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with the most recent commits per day in desc order
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
-        # @note latest_by_day does not contain a branch name
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path, since: 20.years.ago)
+        def latest_by_day(path)
           cmd = [
-            'git log --all --no-merges --format="%ci^%H"',
-            "--since=\"#{since.to_s(:db)}\"",
+            'git log',
+            '--all',
+            '--format="%ci|%H"',
             '--date=local',
-            '| grep -v \'refs/pull\'',
             '| sort -u -r -k1,1'
           ].join(' ')
 
           result = SupportEngine::Shell.call_in_path(path, cmd)
           fail_if_invalid(result)
 
-          result[:stdout]
-            .split("\n")
-            .delete_if(&:empty?)
-            .map! { |commit| build_commit(commit, nil) }
+          base = result[:stdout].split("\n")
+          base.map! do |details|
+            data = details.split('|')
+            { commit_hash: data[1], committed_at: Time.zone.parse(data[0]) }
+          end
+          base.uniq! { |h| h[:commit_hash] }
+          base
         end
 
         # Fetches newest commit for each branch that is in the repository (for its current state)
+        # @note It does not resolve the branch name!
         # @param path [String, Pathname] path to a place where git repo is
         # @return [Array<Hash>] array with the latest commit per each branch
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
@@ -109,15 +100,40 @@ module SupportEngine
           result = SupportEngine::Shell.call_in_path(path, cmd)
           fail_if_invalid(result)
 
-          # We fake head here, because otherwise it would return nil as it would catch
-          # into the head detection loop (this is a cornercase because latest by branch
-          # has a different bash git command)
-          result[:stdout]
-            .split("\n")
-            .delete_if(&:empty?)
-            .map! { |commit| commit.split('^:').join("\n") }
-            .map! { |commit| build_commit(commit, ':') }
-            .delete_if { |commit| commit[:branch].empty? }
+          base = result[:stdout].split("\n")
+          base.delete_if(&:empty?)
+          base.map! { |commit| commit.split('^:').join("\n") }
+          base.map! do |details|
+            data = details.split('^')
+            { commit_hash: data[1].split("\n")[0], committed_at: Time.zone.parse(data[0]) }
+          end
+          base.uniq! { |h| h[:commit_hash] }
+          base
+        end
+
+        # @param path [String, Pathname] path to a place where git repo is
+        # @param commit_hash [String] git commit hash for which we want to get branch
+        # @return [String] comit branch name
+        def branch(path, commit_hash)
+          cmd = [
+            'git for-each-ref --contains',
+            commit_hash,
+            '| grep -v \'refs/pull/\' | cat'
+          ]
+
+          result = SupportEngine::Shell.call_in_path(path, cmd)
+          fail_if_invalid(result)
+
+          # We need to know the main head of the repo, for branch picking
+          # In case there are multiple branches containing same commit, we prioritize
+          # head as the owner of a commit
+          head = Ref.head(path)[:stdout].delete("\n")
+
+          # If the head points to HEAD it means that the repo is in the detach state
+          # and we need to pick the latest ref to get a head branch
+          head = head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
+
+          resolve_branch result[:stdout].split("\n"), commit_hash, head
         end
 
         private
@@ -131,19 +147,6 @@ module SupportEngine
             if result[:stderr].include?('Not a git repository')
         end
 
-        # Builds a commit hash with basic details about single commit
-        # @param raw_commit_data [String] raw string that describes a single commit
-        # @return [Hash] hash with commit details (commit hash, date and branch)
-        def build_commit(raw_commit_data, head)
-          data = raw_commit_data.split("\n")
-          base = data.shift.split('^')
-
-          resolve_branch(data, base[1], head).merge(
-            commit_hash: base[1],
-            committed_at: Time.zone.parse(base[0])
-          )
-        end
-
         # Figures out the commit branch based on the candidates (if multiple)
         # When we clone from remote bare repository, we get branches with the origin/ prefix
         # and head pointer. Based on that we resolve to the head branch or we pick first one
@@ -153,7 +156,7 @@ module SupportEngine
         #   if found
         def resolve_branch(each_ref, commit_hash, head)
           # We prioritize head branches as main branches of a commit if they are in the head
-          return { branch: head } if each_ref.any? do |candidate|
+          return head if each_ref.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
           end
 
@@ -175,8 +178,6 @@ module SupportEngine
 
           # And we pick the first one with and sanitize it to get only the branch name
           branch.tap(&method(:sanitize_branch))
-
-          { branch: branch }
         end
 
         # Removes unwanted prefixes from branch name
