@@ -25,15 +25,17 @@ module SupportEngine
       class << self
         # Fetches all commits with additional details like date
         # @param path [String, Pathname] path to a place where git repo is
+        # @param branch [String] branch name. Defaults to --all so we get all the commits
+        #   from all the branches
         # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with all commits hashes from repo from path
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
-        def all(path, since: 20.years.ago)
+        def all(path, branch: '--all', since: 20.years.ago)
           cmd = [
-            'git log --all',
+            "git log #{branch}",
             '--pretty="%cD|%H"',
             '--no-merges',
             "--since=\"#{since.to_s(:db)}\""
@@ -53,6 +55,8 @@ module SupportEngine
 
         # Fetches newest commit for each day with day details
         # @param path [String, Pathname] path to a place where git repo is
+        # @param branch [String] branch name. Defaults to --all so we get all the commits
+        #   from all the branches
         # @param since [Date] the earliest day for which we return data
         # @return [Array<Hash>] array with the most recent commits per day in desc order
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
@@ -60,9 +64,9 @@ module SupportEngine
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path, since: 20.years.ago)
+        def latest_by_day(path, branch: '--all', since: 20.years.ago)
           cmd = [
-            'git log --all --date=local',
+            "git log #{branch} --date=local",
             '--format="%ci|%H"',
             "--since=\"#{since.to_s(:db)}\"",
             '| sort -u -r -k1,1'
