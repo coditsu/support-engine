@@ -97,28 +97,4 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect { latest_by_branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
-
-  describe '.branch' do
-    subject(:branch) { described_class.branch(path, commit_hash) }
-
-    let(:commit_hash) { described_class.all(path).first[:commit_hash] }
-
-    context 'when path exist and git repo' do
-      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
-
-      it { expect(branch).to eq 'different-branch' }
-    end
-
-    context 'when path exist but not git repo' do
-      let(:path) { Pathname.new '/' }
-
-      it { expect { branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
-    end
-
-    context 'when path does not exist' do
-      let(:path) { Pathname.new "/#{rand}" }
-
-      it { expect { branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
-    end
-  end
 end

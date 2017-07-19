@@ -3,7 +3,7 @@
 module SupportEngine
   module Git
     # Module for executing git commands on references
-    module Ref
+    class Ref < Base
       class << self
         # Returns latest reference in a local repository
         # @param local_path [String] local path to which we clone

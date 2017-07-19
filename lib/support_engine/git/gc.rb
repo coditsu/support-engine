@@ -3,7 +3,7 @@
 module SupportEngine
   module Git
     # Module for handling commits
-    module Gc
+    class Gc < Base
       class << self
         # Performs a cleaning of useless git data
         # @param path [String, Pathname] path to a place where git repo is
@@ -13,12 +13,7 @@ module SupportEngine
         #   SupportEngine::Git::Gc.prune(Rails.root) #=> true
         def prune(path)
           result = SupportEngine::Shell.call_in_path(path, 'git gc --prune -q')
-
-          raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
-            unless result[:exit_code].zero?
-          raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
-            if result[:stderr].include?('Not a git repository')
-
+          fail_if_invalid(result)
           true
         end
       end

@@ -4,7 +4,7 @@ module SupportEngine
   module Git
     # Module for handling git-extras commands
     # @see https://github.com/tj/git-extras
-    module Extras
+    class Extras < Base
       class << self
         # Runs git effort
         # @note We remove all the colors and sort before returning results

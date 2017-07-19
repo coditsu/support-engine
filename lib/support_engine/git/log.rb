@@ -3,7 +3,7 @@
 module SupportEngine
   module Git
     # Module for handling log
-    module Log
+    class Log < Base
       class << self
         # Returns a shortlog describing all the commiters for project that is
         #   under path

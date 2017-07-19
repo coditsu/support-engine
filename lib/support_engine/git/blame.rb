@@ -3,7 +3,7 @@
 module SupportEngine
   module Git
     # Module for handling blame command
-    module Blame
+    class Blame < Base
       class << self
         # Returns blame details about a given file
         # @param path [String] path of a current repository build
