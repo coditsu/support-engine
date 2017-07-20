@@ -53,7 +53,8 @@ module SupportEngine
         # @param path [String, Pathname] path to a place where git repo is
         # @return [String] head branch name
         def head(path)
-          Ref.head(path)[:stdout].delete("\n")
+          head = Ref.head(path)[:stdout].delete("\n")
+          head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
         end
 
         private
