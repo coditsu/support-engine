@@ -94,6 +94,7 @@ module SupportEngine
         # @param branch [String] branch name
         # @return [String] sanitized same branch name
         def sanitize_branch(branch)
+          raise SupportEngine::Errors::UnknownBranch unless branch
           UNWANTED_PREFIXES.each { |prefix| branch.gsub!(prefix, '') }
           branch
         end

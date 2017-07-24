@@ -8,5 +8,7 @@ module SupportEngine
     # Raised when we try to execute a shell command
     # but for some reason it failed
     FailedShellCommand = Class.new(Base)
+    # Raised when we cannot determine branch of a commit
+    UnknownBranch = Class.new(Base)
   end
 end
