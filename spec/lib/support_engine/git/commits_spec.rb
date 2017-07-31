@@ -49,7 +49,9 @@ RSpec.describe SupportEngine::Git::Commits do
   end
 
   describe '.latest_by_day' do
-    subject(:latest_by_day) { described_class.latest_by_day(path) }
+    subject(:latest_by_day) { described_class.latest_by_day(path, limit: limit) }
+
+    let(:limit) { nil }
 
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
@@ -61,6 +63,15 @@ RSpec.describe SupportEngine::Git::Commits do
         # We compare to reverse because Ruby makes an asc sort
         expect(days_in_return_order).to eq days_in_return_order.sort.reverse
       end
+    end
+
+    context 'when path exist and git repo with liit' do
+      let(:limit) { 1 }
+      let(:path) { Pathname.new './' }
+      let(:days_in_return_order) { latest_by_day.map { |commit| commit[:committed_at] } }
+      let(:expected_hash) { '69168f7ad757f854a71873669ec6431359d27988' }
+
+      it { expect(latest_by_day.count).to eq 1 }
     end
 
     context 'when path exist but not git repo' do

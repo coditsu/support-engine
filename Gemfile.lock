@@ -31,7 +31,7 @@ GEM
     docile (1.1.5)
     i18n (0.8.6)
     json (2.1.0)
-    minitest (5.10.2)
+    minitest (5.10.3)
     reform (2.2.4)
       disposable (>= 0.4.1)
       representable (>= 2.4.0, < 3.1.0)
@@ -79,4 +79,4 @@ DEPENDENCIES
   support_engine!
 
 BUNDLED WITH
-   1.15.2
+   1.15.3

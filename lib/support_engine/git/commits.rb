@@ -58,17 +58,19 @@ module SupportEngine
         # @param branch [String] branch name. Defaults to --all so we get all the commits
         #   from all the branches
         # @param since [Date] the earliest day for which we return data
+        # @param limit [Integer, nil] limmit of commits that we want
         # @return [Array<Hash>] array with the most recent commits per day in desc order
         # @raise [Errors::FailedShellCommand] raised when anything went wrong
         #
         # @example Run for current repo
         #   SupportEngine::Git::Commits.latest_by_day('./') #=>
         #     [{:commit_hash=>"421cd..."]
-        def latest_by_day(path, branch: '--all', since: 20.years.ago)
+        def latest_by_day(path, branch: '--all', since: 20.years.ago, limit: nil)
           cmd = [
             "git log #{branch} --date=local",
             '--format="%ci|%H"',
             "--since=\"#{since.to_s(:db)}\"",
+            limit ? "-n#{limit}" : '',
             '| sort -u -r -k1,1'
           ].join(' ')
 
