@@ -44,7 +44,8 @@ module SupportEngine
           #   @param name [Symbol] Name of a property under which the generated value will
           #     be stored
           #   @param from [Proc] Proc that will be evaluated in the contract context
-          def checksum_property(name, from: [])
+          #   @param type [Class] type of digest that we want to use
+          def checksum_property(name, from: [], type: OpenSSL::Digest::SHA256)
             property name
             validates name, presence: true
 
@@ -52,7 +53,7 @@ module SupportEngine
               cached_value = instance_variable_get(:"@#{name}")
               return cached_value if cached_value
 
-              new_value = OpenSSL::Digest::SHA256.hexdigest(values(name, from).join(''))
+              new_value = type.hexdigest(values(name, from).join(''))
               instance_variable_set(:"@#{name}", new_value)
 
               public_send(:"#{name}=", new_value)
