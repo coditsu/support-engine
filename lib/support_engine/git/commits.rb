@@ -22,6 +22,10 @@ module SupportEngine
         release
       ].freeze
 
+      # Limit originated from check to this limit, if we are not able to determine branch by this
+      # limit then we fail
+      ORIGINATED_FROM_LIMIT = 50
+
       class << self
         # Fetches all commits with additional details like date
         # @param path [String, Pathname] path to a place where git repo is
@@ -107,6 +111,38 @@ module SupportEngine
           end
           base.uniq! { |h| h[:commit_hash] }
           base
+        end
+
+        # Figures out the commit that branch originated from
+        # @param path [String, Pathname] path to a place where git repo is
+        # @param commit_hash [String] git commit hash for which we want to get branch
+        # @return [String] commit that branch originated from
+        def originated_from(path, commit_hash)
+          cmd = ["git checkout #{commit_hash}"]
+
+          SupportEngine::Shell.call_in_path(path, cmd.join(''))
+
+          cmd = [
+            'git show-branch',
+            '| sed "s/].*//"',
+            '| grep "++"',
+            '| grep -v',
+            '"$(git rev-parse --abbrev-ref HEAD)"',
+            '| head -n1',
+            '| sed "s/^.*\[//"'
+          ]
+          result = SupportEngine::Shell.call_in_path(path, cmd)
+
+          result = SupportEngine::Shell.call_in_path(
+            path,
+            "git merge-base #{commit_hash} #{result[:stdout].strip}"
+          )
+
+          fail_if_invalid(result)
+
+          SupportEngine::Shell.call_in_path(path, 'git checkout master')
+
+          result[:stdout].strip
         end
       end
     end

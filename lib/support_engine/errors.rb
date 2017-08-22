@@ -10,5 +10,7 @@ module SupportEngine
     FailedShellCommand = Class.new(Base)
     # Raised when we cannot determine branch of a commit
     UnknownBranch = Class.new(Base)
+    # Raised when we are not able to determinate from which commit branch originated from
+    UnableToDetermineOriginatedFrom = Class.new(Base)
   end
 end

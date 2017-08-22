@@ -8,4 +8,14 @@ RSpec.describe SupportEngine::Errors do
   specify do
     expect(described_class::FailedShellCommand.ancestors).to include(described_class::Base)
   end
+
+  specify do
+    expect(described_class::UnknownBranch.ancestors).to include(described_class::Base)
+  end
+
+  specify do
+    expect(
+      described_class::UnableToDetermineOriginatedFrom.ancestors
+    ).to include(described_class::Base)
+  end
 end
