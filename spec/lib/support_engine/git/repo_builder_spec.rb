@@ -33,7 +33,10 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
     subject(:bare?) { described_class.bare?(path) }
 
     context 'true' do
-      let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterBareMirror.location }
+
+      before { SupportEngine::Git::RepoBuilder::MasterBareMirror.bootstrap }
+      after { SupportEngine::Git::RepoBuilder::MasterBareMirror.destroy }
 
       it { expect(bare?).to be true }
     end
