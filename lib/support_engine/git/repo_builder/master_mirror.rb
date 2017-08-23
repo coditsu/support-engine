@@ -5,8 +5,13 @@ module SupportEngine
     module RepoBuilder
       # Creates new mirror repository from master repository
       class MasterMirror < Base
-        # Steps we need to take in order to setup dummy repository with --mirror
-        BOOTSTRAP_CMD = "git clone --mirror #{Master.location} #{location}/.git/"
+        class << self
+          # Steps we need to take in order to setup dummy repository with --mirror
+          def bootstrap
+            destroy
+            Git.clone_mirror(Master.location, location)
+          end
+        end
       end
     end
   end
