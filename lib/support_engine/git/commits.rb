@@ -22,10 +22,6 @@ module SupportEngine
         release
       ].freeze
 
-      # Limit originated from check to this limit, if we are not able to determine branch by this
-      # limit then we fail
-      ORIGINATED_FROM_LIMIT = 50
-
       class << self
         # Fetches all commits with additional details like date
         # @param path [String, Pathname] path to a place where git repo is
@@ -115,32 +111,22 @@ module SupportEngine
 
         # Figures out the commit that branch originated from
         # @param path [String, Pathname] path to a place where git repo is
+        # @param branch [String] branch on which we are on
         # @param commit_hash [String] git commit hash for which we want to get branch
         # @return [String] commit that branch originated from
-        def originated_from(path, commit_hash)
-          cmd = ["git checkout #{commit_hash}"]
+        def originated_from(path, branch, commit_hash)
+          result = nil
 
-          SupportEngine::Shell.call_in_path(path, cmd.join(''))
-
-          cmd = [
-            'git show-branch',
-            '| sed "s/].*//"',
-            '| grep "++"',
-            '| grep -v',
-            '"$(git rev-parse --abbrev-ref HEAD)"',
-            '| head -n1',
-            '| sed "s/^.*\[//"'
-          ]
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-
-          result = SupportEngine::Shell.call_in_path(
-            path,
-            "git merge-base #{commit_hash} #{result[:stdout].strip}"
-          )
-
-          fail_if_invalid(result)
-
-          SupportEngine::Shell.call_in_path(path, 'git checkout master')
+          Git.within_checkout(path, commit_hash, branch) do
+            cmd = [
+              'git merge-base',
+              commit_hash,
+              '$(git show-branch', '| sed "s/].*//"', '| grep "++"', '| grep -v',
+              '"$(git rev-parse --abbrev-ref HEAD)"', '| head -n1', '| sed "s/^.*\[//")'
+            ]
+            result = SupportEngine::Shell.call_in_path(path, cmd)
+            fail_if_invalid(result)
+          end
 
           result[:stdout].strip
         end

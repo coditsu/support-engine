@@ -21,7 +21,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
+          expect(described_class.checkout(dest, 'different-branch')).to be true
         end
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
+          expect(described_class.checkout(dest, 'different-branch')).to be true
         end
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
+          expect(described_class.checkout(dest, 'different-branch')).to be true
         end
       end
     end
