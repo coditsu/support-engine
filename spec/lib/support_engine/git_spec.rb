@@ -21,7 +21,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
         end
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
         end
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe SupportEngine::Git do
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
         it do
-          expect(SupportEngine::Git::RepoBuilder.checkout?(dest, 'different-branch')).to be true
+          expect(SupportEngine::Git.checkout(dest, 'different-branch')).to be true
         end
       end
     end
@@ -82,5 +82,78 @@ RSpec.describe SupportEngine::Git do
 
     it { expect(tracked_files_count).to be_a(Integer) }
     it { expect(tracked_files_count).to eq(1) }
+  end
+
+  describe '.checkout' do
+    subject { described_class.checkout(path, branch_or_commit) }
+
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+
+    context 'already on a branch' do
+      let(:branch_or_commit) { 'master' }
+
+      it { is_expected.to be true }
+    end
+
+    context 'switch to abranch' do
+      let(:branch_or_commit) { 'different-branch' }
+
+      after { described_class.checkout(path, 'master') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'switch to a commit hash' do
+      let(:branch_or_commit) { SupportEngine::Git::Commits.all(path).last[:commit_hash] }
+
+      after { described_class.checkout(path, 'master') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'branch not exists' do
+      let(:branch_or_commit) { 'not-existent' }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '.checkout_success?' do
+    subject { described_class.send(:checkout_success?, message, branch_or_commit) }
+
+    let(:branch_or_commit) { 'master' }
+
+    context 'already on branch' do
+      let(:message) { "Already on '#{branch_or_commit}'" }
+
+      it { is_expected.to be true }
+    end
+
+    context 'switch to branch' do
+      let(:message) { "Switched to branch '#{branch_or_commit}'" }
+
+      it { is_expected.to be true }
+    end
+
+    context 'switch to commit' do
+      let(:branch_or_commit) { '7987d360dc73ac64ead4a26f8a451822e37788f5' }
+      let(:message) do
+        "Note: checking out '7987d360dc73ac64ead4a26f8a451822e37788f5'.\n\n" \
+        "You are in 'detached HEAD' state. You can look around, make experimental\n" \
+        "changes and commit them, and you can discard any commits you make in this\n" \
+        "state without impacting any branches by performing another checkout.\n\n" \
+        "If you want to create a new branch to retain commits you create, you may\n" \
+        "do so (now or later) by using -b with the checkout command again. Example:\n\n  " \
+        "git checkout -b <new-branch-name>\n\nHEAD is now at 7987d36... master commit"
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'invalid message' do
+      let(:message) { "error: pathspec 'not-existent' did not match any file(s) known to git." }
+
+      it { is_expected.to be false }
+    end
   end
 end
