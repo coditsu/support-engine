@@ -85,18 +85,18 @@ RSpec.describe SupportEngine::Git do
   end
 
   describe '.checkout' do
-    subject { described_class.checkout(path, branch_or_commit) }
+    subject { described_class.checkout(path, ref) }
 
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
     context 'already on a branch' do
-      let(:branch_or_commit) { 'master' }
+      let(:ref) { 'master' }
 
       it { is_expected.to be true }
     end
 
     context 'switch to abranch' do
-      let(:branch_or_commit) { 'different-branch' }
+      let(:ref) { 'different-branch' }
 
       after { described_class.checkout(path, 'master') }
 
@@ -104,7 +104,7 @@ RSpec.describe SupportEngine::Git do
     end
 
     context 'switch to a commit hash' do
-      let(:branch_or_commit) { SupportEngine::Git::Commits.all(path).last[:commit_hash] }
+      let(:ref) { SupportEngine::Git::Commits.all(path).last[:commit_hash] }
 
       after { described_class.checkout(path, 'master') }
 
@@ -112,31 +112,31 @@ RSpec.describe SupportEngine::Git do
     end
 
     context 'branch not exists' do
-      let(:branch_or_commit) { 'not-existent' }
+      let(:ref) { 'not-existent' }
 
       it { is_expected.to be false }
     end
   end
 
   describe '.checkout_success?' do
-    subject { described_class.send(:checkout_success?, message, branch_or_commit) }
+    subject { described_class.send(:checkout_success?, message, ref) }
 
-    let(:branch_or_commit) { 'master' }
+    let(:ref) { 'master' }
 
     context 'already on branch' do
-      let(:message) { "Already on '#{branch_or_commit}'" }
+      let(:message) { "Already on '#{ref}'" }
 
       it { is_expected.to be true }
     end
 
     context 'switch to branch' do
-      let(:message) { "Switched to branch '#{branch_or_commit}'" }
+      let(:message) { "Switched to branch '#{ref}'" }
 
       it { is_expected.to be true }
     end
 
     context 'switch to commit' do
-      let(:branch_or_commit) { '7987d360dc73ac64ead4a26f8a451822e37788f5' }
+      let(:ref) { '7987d360dc73ac64ead4a26f8a451822e37788f5' }
       let(:message) do
         "Note: checking out '7987d360dc73ac64ead4a26f8a451822e37788f5'.\n\n" \
         "You are in 'detached HEAD' state. You can look around, make experimental\n" \
