@@ -48,56 +48,6 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
     end
   end
 
-  describe '.checkout?' do
-    subject(:checkout?) { described_class.checkout?(path, branch) }
-
-    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
-
-    context 'already on branch' do
-      let(:branch) { 'master' }
-
-      it { expect(checkout?).to be true }
-    end
-
-    context 'switch to branch' do
-      let(:branch) { 'different-branch' }
-
-      after { described_class.checkout?(path, 'master') }
-
-      it { expect(checkout?).to be true }
-    end
-
-    context 'branch not exists' do
-      let(:branch) { 'not-existent' }
-
-      it { expect(checkout?).to be false }
-    end
-  end
-
-  describe '.checkout_success?' do
-    subject(:checkout_success?) { described_class.send(:checkout_success?, message, branch) }
-
-    let(:branch) { 'master' }
-
-    context 'already on branch' do
-      let(:message) { "Already on '#{branch}'" }
-
-      it { expect(checkout_success?).to be true }
-    end
-
-    context 'switch to branch' do
-      let(:message) { "Switched to branch '#{branch}'" }
-
-      it { expect(checkout_success?).to be true }
-    end
-
-    context 'invalid message' do
-      let(:message) { "error: pathspec 'not-existent' did not match any file(s) known to git." }
-
-      it { expect(checkout_success?).to be false }
-    end
-  end
-
   describe '.versions' do
     subject(:versions) { described_class.send(:versions) }
 
