@@ -108,4 +108,42 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect { latest_by_branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
+
+  describe '.originated_from' do
+    subject { described_class.originated_from(path, branch, commit_hash) }
+
+    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+    let(:branch) { 'master' }
+    let(:commit_hash) { described_class.all(path).first[:commit_hash] }
+    let(:commit_hash_originated_from) { described_class.all(path).last[:commit_hash] }
+
+    context 'small branch' do
+      it { is_expected.to eq(commit_hash_originated_from) }
+    end
+
+    context 'big branch' do
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.location }
+
+      before { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
+      after { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.destroy }
+
+      it { is_expected.to eq(commit_hash_originated_from) }
+    end
+
+    context 'big branch on cloned repository' do
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.location }
+
+      before do
+        SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap
+        SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap
+      end
+
+      after do
+        SupportEngine::Git::RepoBuilder::MasterWithBigBranch.destroy
+        SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.destroy
+      end
+
+      it { is_expected.to eq(commit_hash_originated_from) }
+    end
+  end
 end
