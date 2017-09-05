@@ -109,12 +109,18 @@ module SupportEngine
         def originated_from(path, branch, commit_hash)
           result = nil
 
+          # If the passed branch is the HEAD branch, there is not really a merge-base other than
+          # itself. In cases like that, instead of returning a previous commit, we return the
+          # same commit that we're on. This will indicate for other parts of the system,
+          # that this case should be handled differently.
+          return commit_hash if SupportEngine::Git::Branch.head(path) == branch
+
           Git.within_checkout(path, commit_hash, branch) do
             cmd = [
               'git merge-base',
               commit_hash,
-              '$(git show-branch', '| sed "s/].*//"', '| grep "++"', '| grep -v',
-              '"$(git rev-parse --abbrev-ref HEAD)"', '| head -n1', '| sed "s/^.*\[//")'
+              '$(git show-branch| grep "++"| grep -v "$(git rev-parse --abbrev-ref HEAD)"',
+              '| head -n1| sed "s/].*//; s/^.*\[//")'
             ]
             result = SupportEngine::Shell.call_in_path(path, cmd)
             fail_if_invalid(result)
