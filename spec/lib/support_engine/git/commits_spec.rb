@@ -113,12 +113,26 @@ RSpec.describe SupportEngine::Git::Commits do
     subject { described_class.originated_from(path, branch, commit_hash) }
 
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
-    let(:branch) { 'master' }
+    let(:branch) { 'different-branch' }
     let(:commit_hash) { described_class.all(path).first[:commit_hash] }
     let(:commit_hash_originated_from) { described_class.all(path).last[:commit_hash] }
 
-    context 'small branch' do
-      it { is_expected.to eq(commit_hash_originated_from) }
+    context 'master with branch' do
+      let(:branch) { 'master' }
+      let(:commit_hash) { described_class.all(path, branch: branch).first[:commit_hash] }
+
+      it { is_expected.to eq(commit_hash) }
+    end
+
+    context 'master branch only' do
+      let(:branch) { 'master' }
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterOnly.location }
+      let(:commit_hash) { described_class.all(path, branch: branch).first[:commit_hash] }
+
+      before { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
+      after { SupportEngine::Git::RepoBuilder::MasterOnly.destroy }
+
+      it { is_expected.to eq(commit_hash) }
     end
 
     context 'big branch' do
