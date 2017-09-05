@@ -119,8 +119,8 @@ module SupportEngine
             cmd = [
               'git merge-base',
               commit_hash,
-              '$(git show-branch', '| sed "s/].*//"', '| grep "++"', '| grep -v',
-              '"$(git rev-parse --abbrev-ref HEAD)"', '| head -n1', '| sed "s/^.*\[//")'
+              '$(git show-branch| grep "++"| grep -v "$(git rev-parse --abbrev-ref HEAD)"',
+              '| head -n1| sed "s/].*//; s/^.*\[//")'
             ]
             result = SupportEngine::Shell.call_in_path(path, cmd)
             fail_if_invalid(result)
