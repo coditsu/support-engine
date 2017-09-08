@@ -9,6 +9,7 @@ module SupportEngine
           # Steps we need to take in order to setup dummy repository with --mirror
           def bootstrap
             destroy
+            MasterWithBigBranch.bootstrap
             Git.clone_mirror(MasterWithBigBranch.location, location)
           end
         end

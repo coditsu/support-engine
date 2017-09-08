@@ -106,27 +106,32 @@ module SupportEngine
         # @param branch [String] branch on which we are on
         # @param commit_hash [String] git commit hash for which we want to get branch
         # @return [String] commit that branch originated from
+        # @note This should be executed only in the detached mode. Otherwise it will detach
+        #   the repo back to the commit hash for which we check
         def originated_from(path, branch, commit_hash)
-          result = nil
-
           # If the passed branch is the HEAD branch, there is not really a merge-base other than
           # itself. In cases like that, instead of returning a previous commit, we return the
           # same commit that we're on. This will indicate for other parts of the system,
           # that this case should be handled differently.
-          return commit_hash if SupportEngine::Git::Branch.head(path) == branch
+          # return commit_hash if SupportEngine::Git::Branch.head(path) == branch
+          Git.within_checkout(path, branch, commit_hash) do
+            base_branch_cmd = [
+              'git show-branch -a 2>/dev/null', 'grep \'\*\'',
+              "grep -v \"#{branch}\"", 'head -n1', 'sed \'s/.*\[\(.*\)\].*/\1/\'',
+              'sed \'s/[\^~].*//\''
+            ].join(' | ')
 
-          Git.within_checkout(path, commit_hash, branch) do
-            cmd = [
-              'git merge-base',
-              commit_hash,
-              '$(git show-branch| grep "++"| grep -v "$(git rev-parse --abbrev-ref HEAD)"',
-              '| head -n1| sed "s/].*//; s/^.*\[//")'
-            ]
+            base_branch_res = SupportEngine::Shell.call_in_path(path, base_branch_cmd)
+            fail_if_invalid(base_branch_res)
+            base_branch = base_branch_res[:stdout].strip
+
+            return commit_hash if base_branch.empty?
+
+            cmd = ['git merge-base', commit_hash, base_branch].join(' ')
             result = SupportEngine::Shell.call_in_path(path, cmd)
-            fail_if_invalid(result)
-          end
 
-          result[:stdout].strip
+            return result[:stdout].strip
+          end
         end
 
         private

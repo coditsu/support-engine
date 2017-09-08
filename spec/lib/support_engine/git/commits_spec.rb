@@ -112,14 +112,17 @@ RSpec.describe SupportEngine::Git::Commits do
   describe '.originated_from' do
     subject { described_class.originated_from(path, branch, commit_hash) }
 
-    let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
     let(:branch) { 'different-branch' }
     let(:commit_hash) { described_class.all(path).first[:commit_hash] }
     let(:commit_hash_originated_from) { described_class.all(path).last[:commit_hash] }
 
     context 'master with branch' do
+      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
       let(:branch) { 'master' }
       let(:commit_hash) { described_class.all(path, branch: branch).first[:commit_hash] }
+
+      before { SupportEngine::Git::RepoBuilder::Master.bootstrap }
+      after { SupportEngine::Git::RepoBuilder::Master.bootstrap }
 
       it { is_expected.to eq(commit_hash) }
     end
@@ -130,7 +133,7 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:commit_hash) { described_class.all(path, branch: branch).first[:commit_hash] }
 
       before { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
-      after { SupportEngine::Git::RepoBuilder::MasterOnly.destroy }
+      after { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
 
       it { is_expected.to eq(commit_hash) }
     end
@@ -139,7 +142,7 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
-      after { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.destroy }
+      after { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
 
       it { is_expected.to eq(commit_hash_originated_from) }
     end
@@ -147,15 +150,8 @@ RSpec.describe SupportEngine::Git::Commits do
     context 'big branch on cloned repository' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.location }
 
-      before do
-        SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap
-        SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap
-      end
-
-      after do
-        SupportEngine::Git::RepoBuilder::MasterWithBigBranch.destroy
-        SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.destroy
-      end
+      before { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap }
+      after { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap }
 
       it { is_expected.to eq(commit_hash_originated_from) }
     end

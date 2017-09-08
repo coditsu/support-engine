@@ -51,12 +51,6 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
   describe '.versions' do
     subject(:versions) { described_class.send(:versions) }
 
-    it { expect(versions.size).to eq(6) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::Master) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::MasterMirror) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::NoMaster) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::NoMasterMirror) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::BrokenHeadRef) }
-    it { expect(versions).to include(SupportEngine::Git::RepoBuilder::BrokenHeadRefMirror) }
+    it { expect(versions.size).to eq(17) }
   end
 end

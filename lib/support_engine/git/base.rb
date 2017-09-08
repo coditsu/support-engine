@@ -14,6 +14,8 @@ module SupportEngine
             unless result[:exit_code].zero?
           raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
             if result[:stderr].include?('Not a git repository')
+
+          result
         end
       end
     end

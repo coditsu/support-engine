@@ -46,6 +46,7 @@ module SupportEngine
       def within_checkout(path, ref, original_ref)
         Git.checkout(path, ref)
         yield
+      ensure
         Git.checkout(path, original_ref)
       end
 

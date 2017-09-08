@@ -43,14 +43,7 @@ module SupportEngine
         # @note We need to have them in a particular order (that's why we can't use #descendants)
         #   because some of them depend on others
         def versions
-          [
-            Master,
-            MasterMirror,
-            NoMaster,
-            NoMasterMirror,
-            BrokenHeadRef,
-            BrokenHeadRefMirror
-          ]
+          ObjectSpace.each_object(Class).select { |klass| klass < Base }.sort_by(&:to_s)
         end
       end
     end
