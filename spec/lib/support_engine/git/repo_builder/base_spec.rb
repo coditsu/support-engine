@@ -33,13 +33,13 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
 
     let(:command) { 'command' }
 
-    before do
-      described_class.const_set(:BOOTSTRAP_CMD, command)
+    before { described_class.const_set(:BOOTSTRAP_CMD, command) }
+
+    it 'expect to  call, destroy and match shell result' do
       expect(described_class).to receive(:destroy)
       expect(SupportEngine::Shell).to receive(:call).with(command) { 'test' }
+      expect(bootstrap).to eq('test')
     end
-
-    it { expect(bootstrap).to eq('test') }
   end
 
   describe '.destroy' do
@@ -59,9 +59,10 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
     end
 
     context 'dir does not exist' do
-      before { expect(FileUtils).not_to receive(:rm_r) }
-
-      it { destroy }
+      it 'expect not to try to remove it' do
+        expect(FileUtils).not_to receive(:rm_r)
+        destroy
+      end
     end
   end
 end
