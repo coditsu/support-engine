@@ -9,12 +9,11 @@ RSpec.describe SupportEngine::Shell::Utf8 do
     let(:command_with_options) { 'ls' }
     let(:options) { { raise_on_invalid_exit: true } }
 
-    before do
+    it 'expect to run shell and encode' do
       expect(SupportEngine::Shell).to receive(:call).with(command_with_options, options) { true }
       expect(described_class).to receive(:encode).with(true)
+      shell_result
     end
-
-    it { shell_result }
   end
 
   describe '#call_in_path' do
@@ -25,14 +24,13 @@ RSpec.describe SupportEngine::Shell::Utf8 do
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
     let(:command_with_options) { 'ls' }
     let(:options) { { raise_on_invalid_exit: true } }
+    let(:shell_args) { [path, command_with_options, options] }
 
-    before do
-      expect(SupportEngine::Shell).to receive(:call_in_path)
-        .with(path, command_with_options, options) { true }
+    it 'expect to call shell in path and encode' do
+      expect(SupportEngine::Shell).to receive(:call_in_path).with(*shell_args) { true }
       expect(described_class).to receive(:encode).with(true)
+      shell_result
     end
-
-    it { shell_result }
   end
 
   describe '#encode' do

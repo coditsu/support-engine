@@ -7,12 +7,11 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
     let(:version) { class_double(SupportEngine::Git::RepoBuilder::Master) }
     let(:versions) { [version] }
 
-    before do
+    it 'expect to take all the versions and bootstrap all of them' do
       expect(described_class).to receive(:versions) { versions }
       expect(version).to receive(:bootstrap)
+      bootstrap
     end
-
-    it { bootstrap }
   end
 
   describe '.destroy' do
@@ -21,12 +20,11 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
     let(:version) { class_double(SupportEngine::Git::RepoBuilder::Master) }
     let(:versions) { [version] }
 
-    before do
+    it 'expect to take all the versions and destroy all of them' do
       expect(described_class).to receive(:versions) { versions }
       expect(version).to receive(:destroy)
+      destroy
     end
-
-    it { destroy }
   end
 
   describe '.bare?' do
