@@ -116,7 +116,7 @@ module SupportEngine
           # return commit_hash if SupportEngine::Git::Branch.head(path) == branch
           Git.within_checkout(path, branch, commit_hash) do
             base_branch_cmd = [
-              'git show-branch -a 2>/dev/null', 'grep \'\*\'',
+              'git show-branch -a 2>/dev/null', 'grep -E \'\*|\!\'',
               "grep -v \"#{branch}\"", 'head -n1', 'sed \'s/.*\[\(.*\)\].*/\1/\'',
               'sed \'s/[\^~].*//\''
             ].join(' | ')
