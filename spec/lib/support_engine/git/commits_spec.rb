@@ -110,10 +110,9 @@ RSpec.describe SupportEngine::Git::Commits do
   end
 
   describe '.originated_from' do
-    subject { described_class.originated_from(path, branch, commit_hash) }
+    subject { described_class.originated_from(path, branch) }
 
     let(:branch) { 'different-branch' }
-    let(:commit_hash) { described_class.all(path).first[:commit_hash] }
     let(:commit_hash_originated_from) { described_class.all(path).last[:commit_hash] }
 
     context 'master with branch' do

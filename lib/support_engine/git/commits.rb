@@ -104,23 +104,23 @@ module SupportEngine
         # Figures out the commit that branch originated from
         # @param path [String, Pathname] path to a place where git repo is
         # @param base_branch [String] branch on which we are on
-        # @param commit_hash [String] git commit hash for which we want to get branch
         # @return [String] commit that branch originated from
-        def originated_from(path, base_branch, commit_hash)
+        def originated_from(path, base_branch)
           # If the passed branch is the HEAD branch, there is not really a merge-base other than
           # itself. In cases like that, instead of returning a previous commit, we return the
           # same commit that we're on. This will indicate for other parts of the system,
           # that this case should be handled differently.
           bases = Branch
-            .all(path)
-            .map do |branch|
-              cmd = ['git merge-base', branch, base_branch].join(' ')
-              SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
-            end
+                  .all(path)
+                  .map do |branch|
+                    cmd = ['git merge-base', branch, base_branch].join(' ')
+                    SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
+                  end
 
           show_cmd = [
-            'git show -s --format="%ct %H"', bases.join(' '),
-            ' | sort -r | head -n2',
+            'git show -s --format="%ct %H"',
+            bases.join(' '),
+            ' | sort -r | head -n2'
           ].join(' ')
 
           SupportEngine::Shell
