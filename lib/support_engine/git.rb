@@ -38,18 +38,6 @@ module SupportEngine
         result[:exit_code].zero? && checkout_success?(result[:stderr], ref)
       end
 
-      # Run commands within a checkout ref, we have commands that need to be run within
-      # a specific ref, Git::Commits.originated_from for example
-      # @param path [String] path of a current repository build
-      # @param ref [String] branch or commit that we want to checkout to
-      # @return [Boolean] true if we were able to checkout
-      def within_checkout(path, ref, original_ref)
-        Git.checkout(path, ref)
-        yield
-      ensure
-        Git.checkout(path, original_ref)
-      end
-
       private
 
       # Returns true if message is matched

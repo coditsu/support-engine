@@ -25,6 +25,20 @@ RSpec.describe SupportEngine::Git::Branch do
     end
   end
 
+  describe '.all' do
+    subject(:all) { described_class.all(path) }
+
+    context 'when path does not exist' do
+      let(:path) { Pathname.new "/#{rand}" }
+
+      it { expect { all }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
+    end
+
+    context 'when path exist and git repo' do
+      it { expect(all).to eq %w[different-branch master] }
+    end
+  end
+
   describe '.head' do
     subject(:head) { described_class.head(path) }
 

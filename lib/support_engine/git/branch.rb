@@ -22,6 +22,10 @@ module SupportEngine
         release
       ].freeze
 
+      # String part that indicated that we're  on a detached commit and we need to exlude
+      # it from the branches results
+      DETACH_STRING = 'detached at'
+
       class << self
         # Detects a given commit branch
         # @param path [String, Pathname] path to a place where git repo is
@@ -55,6 +59,20 @@ module SupportEngine
         def head(path)
           head = Ref.head(path)[:stdout].delete("\n")
           head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
+        end
+
+        # @param path [String, Pathname] path to a place where git repo is
+        # @return [Array<String>] list of available branches in the repository
+        # @note Won't return detached nor info on the selected branch - just raw list
+        def all(path)
+          branch_list = SupportEngine::Shell.call_in_path(path, 'git branch -a')
+          fail_if_invalid(branch_list)
+
+          branch_list[:stdout]
+            .split("\n")
+            .each(&:strip!)
+            .each { |branch| branch.gsub!('* ', '') }
+            .delete_if { |a| a.include?(DETACH_STRING) }
         end
 
         private
