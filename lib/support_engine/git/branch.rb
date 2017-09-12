@@ -24,7 +24,7 @@ module SupportEngine
 
       # String part that indicated that we're  on a detached commit and we need to exlude
       # it from the branches results
-      DETACH_STRING = 'detached at'
+      DETACH_STRING = 'HEAD detached'
 
       class << self
         # Detects a given commit branch
