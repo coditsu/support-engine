@@ -75,6 +75,35 @@ module SupportEngine
             .delete_if { |a| a.include?(DETACH_STRING) }
         end
 
+        # Figures out the commit that branch originated from
+        # @param path [String, Pathname] path to a place where git repo is
+        # @param base_branch [String] branch on which we are on
+        # @param default_branch [String] default branch of a repository
+        # @return [String] commit that branch originated from
+        def originated_from(path, base_branch, default_branch)
+          # If the passed branch is the default branch, there is not really a merge-base other than
+          # itself. In cases like that, instead of returning a previous commit, we return the
+          # same commit that we're on. This will indicate for other parts of the system,
+          # that this case should be handled differently.
+          candidates = (base_branch == default_branch) ? [base_branch] : all(path)
+
+          bases = candidates.map do |branch|
+                    cmd = ['git merge-base', branch, base_branch].join(' ')
+                    SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
+                  end
+
+          show_cmd = [
+            'git show -s --format="%ct %H"',
+            bases.join(' '),
+            ' | sort -r | head -n2'
+          ].join(' ')
+
+          SupportEngine::Shell
+            .call_in_path(path, show_cmd)[:stdout]
+            .split(/\n|\s/)
+            .last
+        end
+
         private
 
         # Figures out the commit branch based on the candidates (if multiple)
