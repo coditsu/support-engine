@@ -85,12 +85,12 @@ module SupportEngine
           # itself. In cases like that, instead of returning a previous commit, we return the
           # same commit that we're on. This will indicate for other parts of the system,
           # that this case should be handled differently.
-          candidates = (base_branch == default_branch) ? [base_branch] : all(path)
+          candidates = base_branch == default_branch ? [base_branch] : all(path)
 
           bases = candidates.map do |branch|
-                    cmd = "git merge-base '#{branch}' '#{base_branch}'"
-                    SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
-                  end
+            cmd = "git merge-base '#{branch}' '#{base_branch}'"
+            SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
+          end
 
           show_cmd = [
             'git show -s --format="%ct %H"',

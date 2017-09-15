@@ -59,7 +59,7 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:committed_at) { Time.zone.parse(commit.last.strip) }
       let(:single_commit) { all.find { |cm| cm[:commit_hash] == commit_hash } }
 
-      before {  SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.bootstrap }
+      before { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.bootstrap }
 
       it { expect(single_commit).not_to be_nil }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }

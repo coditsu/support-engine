@@ -8,19 +8,19 @@ module SupportEngine
         class << self
           # @return [String] Gemfile with private gem
           def gemfile
-            <<~EOS
+            <<~GEMFILE
               # frozen_string_literal: true
 
               source 'https://rubygems.org'
               ruby '2.4.1'
 
               gem 'private_gem', git: 'git@github.com:servercrunch/private-gem.git'
-            EOS
+            GEMFILE
           end
 
           # @return [String] Gemfile.lock with private gem
           def gemfile_lock
-            <<~EOS
+            <<~GEMFILE
               GIT
                 remote: git@github.com:servercrunch/private-gem.git
                 revision: 80cd253c77c22458e0884e67efd8b311b855db05
@@ -42,7 +42,7 @@ module SupportEngine
 
               BUNDLED WITH
                 1.15.1
-            EOS
+            GEMFILE
           end
         end
 
