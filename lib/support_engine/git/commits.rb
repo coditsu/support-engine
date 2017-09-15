@@ -35,7 +35,7 @@ module SupportEngine
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, branch: '--all', since: 20.years.ago)
           cmd = [
-            "git log #{branch}", '--pretty="%cD|%H"', '--no-merges',
+            "git log #{branch}", '--pretty="%cD^%H"', '--no-merges',
             "--since=\"#{since.to_s(:db)}\""
           ].join(' ')
 
@@ -44,7 +44,7 @@ module SupportEngine
 
           base = result[:stdout].split("\n")
           base.map! do |details|
-            data = details.split('|')
+            data = details.split('^')
             { commit_hash: data[1], committed_at: Time.zone.parse(data[0]) }
           end
           base.uniq! { |h| h[:commit_hash] }

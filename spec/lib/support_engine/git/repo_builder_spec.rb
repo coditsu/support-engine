@@ -49,6 +49,6 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
   describe '.versions' do
     subject(:versions) { described_class.send(:versions) }
 
-    it { expect(versions.size).to eq(17) }
+    it { expect(versions.size).to eq(18) }
   end
 end

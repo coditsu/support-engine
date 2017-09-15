@@ -88,7 +88,7 @@ module SupportEngine
           candidates = (base_branch == default_branch) ? [base_branch] : all(path)
 
           bases = candidates.map do |branch|
-                    cmd = ['git merge-base', branch, base_branch].join(' ')
+                    cmd = "git merge-base '#{branch}' '#{base_branch}'"
                     SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
                   end
 

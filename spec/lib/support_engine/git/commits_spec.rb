@@ -46,6 +46,28 @@ RSpec.describe SupportEngine::Git::Commits do
       # There won't be any commits from now
       it { expect(all.size).to eq(0) }
     end
+
+    context 'for branch with weird name' do
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.location }
+      let(:commit) do
+        SupportEngine::Shell.call_in_path(
+          SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.location,
+          'git log -1 --pretty="%H|%cD"'
+        )[:stdout].split('|')
+      end
+      let(:commit_hash) { commit.first }
+      let(:committed_at) { Time.zone.parse(commit.last.strip) }
+      let(:single_commit) { all.find { |cm| cm[:commit_hash] == commit_hash } }
+
+      before {  SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.bootstrap }
+
+      it { expect(single_commit).not_to be_nil }
+      it { expect(single_commit[:committed_at]).to eq(committed_at) }
+      it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
+      it 'expect to have a committed_at desc order' do
+        expect(all[0][:committed_at]).to be > all[1][:committed_at]
+      end
+    end
   end
 
   describe '.latest_by_day' do

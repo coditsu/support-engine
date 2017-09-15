@@ -63,6 +63,17 @@ RSpec.describe SupportEngine::Git::Branch do
       it { is_expected.to eq(commit_hash) }
     end
 
+    context 'master with weird branch' do
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.location }
+      let(:branch) { '#w@eird-branch' }
+      let(:commit_hash) { commits_scope.all(path, branch: 'master').first[:commit_hash] }
+
+      after { SupportEngine::Git::RepoBuilder::Master.bootstrap }
+      before { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.bootstrap }
+
+      it { is_expected.to eq(commit_hash) }
+    end
+
     context 'master branch only' do
       let(:branch) { 'master' }
       let(:path) { SupportEngine::Git::RepoBuilder::MasterOnly.location }
