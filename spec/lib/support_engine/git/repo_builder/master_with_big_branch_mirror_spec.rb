@@ -4,7 +4,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror do
   describe '#bootstrap' do
     subject(:bootstrap) { described_class.bootstrap }
 
-    let(:clone_mirror_args) do
+    let(:clone_args) do
       [
         SupportEngine::Git::RepoBuilder::MasterWithBigBranch.location,
         described_class.location
@@ -13,7 +13,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror do
 
     it 'expect to remove previous repo, clone mirror to a new one and return clone path' do
       expect(described_class).to receive(:destroy)
-      expect(SupportEngine::Git).to receive(:clone_mirror).with(*clone_mirror_args) { 'test' }
+      expect(SupportEngine::Git).to receive(:clone_mirror).with(*clone_args).and_return('test')
       expect(bootstrap).to eq('test')
     end
   end

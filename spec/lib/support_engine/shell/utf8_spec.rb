@@ -9,10 +9,12 @@ RSpec.describe SupportEngine::Shell::Utf8 do
     let(:command_with_options) { 'ls' }
     let(:options) { { raise_on_invalid_exit: true } }
 
+    after { shell_result }
+
     it 'expect to run shell and encode' do
-      expect(SupportEngine::Shell).to receive(:call).with(command_with_options, options) { true }
+      expect(SupportEngine::Shell).to receive(:call)
+        .with(command_with_options, options).and_return(true)
       expect(described_class).to receive(:encode).with(true)
-      shell_result
     end
   end
 
@@ -26,10 +28,11 @@ RSpec.describe SupportEngine::Shell::Utf8 do
     let(:options) { { raise_on_invalid_exit: true } }
     let(:shell_args) { [path, command_with_options, options] }
 
+    after { shell_result }
+
     it 'expect to call shell in path and encode' do
-      expect(SupportEngine::Shell).to receive(:call_in_path).with(*shell_args) { true }
+      expect(SupportEngine::Shell).to receive(:call_in_path).with(*shell_args).and_return(true)
       expect(described_class).to receive(:encode).with(true)
-      shell_result
     end
   end
 

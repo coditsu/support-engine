@@ -37,7 +37,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
 
     it 'expect to  call, destroy and match shell result' do
       expect(described_class).to receive(:destroy)
-      expect(SupportEngine::Shell).to receive(:call).with(command) { 'test' }
+      expect(SupportEngine::Shell).to receive(:call).with(command).and_return('test')
       expect(bootstrap).to eq('test')
     end
   end
