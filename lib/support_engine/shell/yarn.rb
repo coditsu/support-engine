@@ -12,7 +12,7 @@ module SupportEngine
         # @return [Hash] Shell.call execution hash
         def call(command, options, raise_on_invalid_exit: true)
           Shell::Utf8.call(
-            "yarn run --silent #{command} -- #{options}",
+            "yarn run --silent #{command} #{options}",
             raise_on_invalid_exit: raise_on_invalid_exit
           )
         end
@@ -25,7 +25,7 @@ module SupportEngine
         def call_in_path(path, command, options, raise_on_invalid_exit: true)
           Shell::Utf8.call_in_path(
             path,
-            "yarn run --silent #{command} -- #{options}",
+            "yarn run --silent #{command} #{options}",
             raise_on_invalid_exit: raise_on_invalid_exit
           )
         end
