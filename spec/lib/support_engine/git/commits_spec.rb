@@ -130,4 +130,26 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect { latest_by_branch }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
+
+  describe '.pull_requests' do
+    subject(:pull_requests) { described_class.pull_requests(path) }
+
+    context 'when path exist and git repo' do
+      let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
+
+      it { expect { pull_requests.size }.not_to raise_error }
+    end
+
+    context 'when path exist but not git repo' do
+      let(:path) { Pathname.new '/' }
+
+      it { expect { pull_requests }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
+    end
+
+    context 'when path does not exist' do
+      let(:path) { Pathname.new "/#{rand}" }
+
+      it { expect { pull_requests }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
+    end
+  end
 end

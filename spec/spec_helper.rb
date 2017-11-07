@@ -7,6 +7,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
   byebug
   rubygems
   simplecov
+  tmpdir
 ].each do |lib|
   require lib
 end
