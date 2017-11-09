@@ -46,12 +46,8 @@ module SupportEngine
           base = call_in_path!(path, cmd)[:stdout].split("\n")
           base.map! do |details|
             data = details.split('^')
-            {
-              commit_hash: data[1],
-              committed_at: Time.zone.parse(data[0]),
-              source: 'origin',
-              ref_id: nil
-            }
+            time = Time.zone.parse(data[0])
+            { commit_hash: data[1], committed_at: time, source: 'origin', ref_id: nil }
           end
           base.uniq! { |h| h[:commit_hash] }
           base
@@ -78,12 +74,8 @@ module SupportEngine
           base = call_in_path!(path, cmd)[:stdout].split("\n")
           base.map! do |details|
             data = details.split('|')
-            {
-              commit_hash: data[1],
-              committed_at: Time.zone.parse(data[0]),
-              source: 'origin',
-              ref_id: nil
-            }
+            time = Time.zone.parse(data[0])
+            { commit_hash: data[1], committed_at: time, source: 'origin', ref_id: nil }
           end
           base.uniq! { |h| h[:commit_hash] }
           base
