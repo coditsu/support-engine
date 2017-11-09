@@ -27,5 +27,3 @@ require_all(
     File.join(File.dirname(__FILE__), '**', '*.rb')
   ).reject { |f| f.include?('repo_builder') }
 )
-
-p SupportEngine::Git::Branch.commit('/home/mencio/Pulpit/wat2', '9e11e9f90d0d3bcc74eb386836ef5b1c34f9041c')
