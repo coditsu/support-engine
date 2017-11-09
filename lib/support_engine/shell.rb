@@ -35,8 +35,7 @@ module SupportEngine
       # @param path [String, Pathname] to a place where git repo is
       # @param command [String] that we want to execute in path context
       # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
-      # @return [Hash] hash with 3 keys describing output
-      #   (stdout, stderr, exit_code)
+      # @return [Hash] hash with 3 keys describing output (stdout, stderr, exit_code)
       def call_in_path(path, command, raise_on_invalid_exit: true)
         command = ['cd', path.to_s.shellescape, '&&', command]
         call(command.join(' '), raise_on_invalid_exit: raise_on_invalid_exit)

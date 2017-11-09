@@ -12,8 +12,7 @@ module SupportEngine
         # @example Cleanup current repo
         #   SupportEngine::Git::Gc.prune(Rails.root) #=> true
         def prune(path)
-          result = SupportEngine::Shell.call_in_path(path, 'git gc --prune -q')
-          fail_if_invalid(result)
+          call_in_path!(path, 'git gc --prune -q')
           true
         end
       end

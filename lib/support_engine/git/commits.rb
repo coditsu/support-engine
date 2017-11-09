@@ -43,13 +43,15 @@ module SupportEngine
             "--since=\"#{since.to_s(:db)}\""
           ].join(' ')
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-          fail_if_invalid(result)
-
-          base = result[:stdout].split("\n")
+          base = call_in_path!(path, cmd)[:stdout].split("\n")
           base.map! do |details|
             data = details.split('^')
-            { commit_hash: data[1], committed_at: Time.zone.parse(data[0]), source: 'origin' }
+            {
+              commit_hash: data[1],
+              committed_at: Time.zone.parse(data[0]),
+              source: 'origin',
+              ref_id: nil
+            }
           end
           base.uniq! { |h| h[:commit_hash] }
           base
@@ -73,10 +75,7 @@ module SupportEngine
             "--since=\"#{since.to_s(:db)}\"", limit ? "-n#{limit}" : '', '| sort -u -r -k1,1'
           ].join(' ')
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-          fail_if_invalid(result)
-
-          base = result[:stdout].split("\n")
+          base = call_in_path!(path, cmd)[:stdout].split("\n")
           base.map! do |details|
             data = details.split('|')
             {
@@ -104,10 +103,10 @@ module SupportEngine
             '| awk -F \'^\' \'!x[$1]++\''
           ].join(' ')
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-          fail_if_invalid(result)
-
-          clean_for_each_ref_results(result[:stdout].split("\n"), 'origin')
+          clean_for_each_ref_results(
+            call_in_path!(path, cmd)[:stdout].split("\n"),
+            'origin'
+          )
         end
 
         # Fetches newest pull request commits for a given repo
@@ -123,10 +122,10 @@ module SupportEngine
             '| awk -F \'^\' \'!x[$1]++\''
           ].join(' ')
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-          fail_if_invalid(result)
-
-          clean_for_each_ref_results(result[:stdout].split("\n"), 'pull')
+          clean_for_each_ref_results(
+            call_in_path!(path, cmd)[:stdout].split("\n"),
+            'pull'
+          )
         end
 
         private
@@ -170,7 +169,7 @@ module SupportEngine
               commit_hash: part2[0],
               committed_at: Time.zone.parse(part1[0]),
               source: source,
-              ref_id: (source == 'pull') ? part2[1][/\d+/].to_i : nil
+              ref_id: source == 'pull' ? part2[1][/\d+/].to_i : nil
             }
           end
           data.uniq! { |h| h[:commit_hash] }

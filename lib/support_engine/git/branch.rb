@@ -38,9 +38,6 @@ module SupportEngine
             '| grep -v \'refs/pull/\' | cat'
           ]
 
-          result = SupportEngine::Shell.call_in_path(path, cmd)
-          fail_if_invalid(result)
-
           # We need to know the main head of the repo, for branch picking
           # In case there are multiple branches containing same commit, we prioritize
           # head as the owner of a commit
@@ -50,7 +47,11 @@ module SupportEngine
           # and we need to pick the latest ref to get a head branch
           head = head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
 
-          resolve_branch result[:stdout].split("\n"), commit_hash, head
+          resolve_branch(
+            call_in_path!(path, cmd)[:stdout].split("\n"),
+            commit_hash,
+            head
+          )
         end
 
         # Detects a head commit branch
@@ -65,10 +66,7 @@ module SupportEngine
         # @return [Array<String>] list of available branches in the repository
         # @note Won't return detached nor info on the selected branch - just raw list
         def all(path)
-          branch_list = SupportEngine::Shell.call_in_path(path, 'git branch -a')
-          fail_if_invalid(branch_list)
-
-          branch_list[:stdout]
+          call_in_path!(path, 'git branch -a')[:stdout]
             .split("\n")
             .each(&:strip!)
             .each { |branch| branch.gsub!('* ', '') }
