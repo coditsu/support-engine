@@ -79,7 +79,12 @@ module SupportEngine
           base = result[:stdout].split("\n")
           base.map! do |details|
             data = details.split('|')
-            { commit_hash: data[1], committed_at: Time.zone.parse(data[0]), source: 'origin' }
+            {
+              commit_hash: data[1],
+              committed_at: Time.zone.parse(data[0]),
+              source: 'origin',
+              ref_id: nil
+            }
           end
           base.uniq! { |h| h[:commit_hash] }
           base
@@ -145,13 +150,13 @@ module SupportEngine
         #     :commit_hash=>"38bd382059e775e762c0c2b59601349a96585b28",
         #     :committed_at=>Fri, 25 Aug 2017 09:58:55 UTC +00:00,
         #     :source=>'origin',
-        #     :ref_id=>''
+        #     :ref_id=>nil
         #   },
         #   {
         #     :commit_hash=>"e9a6bbfe15d89d2c089f1b86f404abe8ecf77e9c",
         #     :committed_at=>Wed, 23 Aug 2017 09:58:55 UTC +00:00,
         #     :source=>'origin',
-        #     :ref_id=>''
+        #     :ref_id=>nil
         #   }
         #   ]
         def clean_for_each_ref_results(data, source)
@@ -165,7 +170,7 @@ module SupportEngine
               commit_hash: part2[0],
               committed_at: Time.zone.parse(part1[0]),
               source: source,
-              ref_id: part2[1][/\d+/].to_s
+              ref_id: (source == 'pull') ? part2[1][/\d+/].to_i : nil
             }
           end
           data.uniq! { |h| h[:commit_hash] }

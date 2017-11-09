@@ -81,6 +81,8 @@ RSpec.describe SupportEngine::Git::Commits do
       let(:expected_hash) { '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
 
       it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
+      it { expect(latest_by_day.last[:ref_id]).to eq nil }
+      it { expect(latest_by_day.last.key?(:ref_id)).to be true }
       it 'expect to have a committed_at desc order' do
         # We compare to reverse because Ruby makes an asc sort
         expect(days_in_return_order).to eq days_in_return_order.sort.reverse
