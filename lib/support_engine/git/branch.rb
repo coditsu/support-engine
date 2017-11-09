@@ -72,10 +72,15 @@ module SupportEngine
 
         # Figures out the commit that branch originated from
         # @param path [String, Pathname] path to a place where git repo is
-        # @param base_branch [String] branch on which we are on
+        # @param base_branch [String] branch on which we are on on pull request details
         # @param default_branch [String] default branch of a repository
         # @return [String] commit that branch originated from
         def originated_from(path, base_branch, default_branch)
+          # This is a corner case for supporting external pull requests.
+          # For them, we return branch that is not really a branch but a description of
+          # pull request (pull/NR). So in order to e able to determine the originated from, we need
+          # to unsanitize this, so it looks the way we git expects it (with refs and head)
+          base_branch = "refs/#{base_branch}/head" if base_branch.include?('pull/')
           # If the passed branch is the default branch, there is not really a merge-base other than
           # itself. In cases like that, instead of returning a previous commit, we return the
           # same commit that we're on. This will indicate for other parts of the system,
