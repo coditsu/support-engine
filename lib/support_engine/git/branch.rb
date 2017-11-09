@@ -5,13 +5,14 @@ module SupportEngine
     # Module for handling branch related operations
     class Branch < Base
       # When we want to resolve branches, we do that based on refs. Refs containt
-      # name prefixes that we don't need so this is a map of prefixes that we have to remove
+      # parts that we don't need so this is a map of parts that we have to remove
       # in order to get proper branch names
-      UNWANTED_PREFIXES = %w[
+      UNWANTED_PARTS = %w[
         refs/remotes/origin/
         refs/remotes/
         refs/heads/
         refs/
+        /head
       ].freeze
 
       # When commit is present in multiple branches, those branches have priority in terms
@@ -32,11 +33,7 @@ module SupportEngine
         # @param commit_hash [String] git commit hash for which we want to get branch
         # @return [String] comit branch name
         def commit(path, commit_hash)
-          cmd = [
-            'git for-each-ref --contains',
-            commit_hash,
-            '| grep -v \'refs/pull/\' | cat'
-          ]
+          cmd = "git for-each-ref --contains #{commit_hash} | cat"
 
           # We need to know the main head of the repo, for branch picking
           # In case there are multiple branches containing same commit, we prioritize
@@ -109,20 +106,40 @@ module SupportEngine
         # and head pointer. Based on that we resolve to the head branch or we pick first one
         # from the list
         # @param each_ref [Array<String>] array with for-each-ref results
+        # @param commit_hash [String] commit hash we're checking
+        # @param head [String] name of the head branch
         # @return [String, nil] nil if no branch detected for a given commit or a branch name
         #   if found
         def resolve_branch(each_ref, commit_hash, head)
+          pull_requests = each_ref.select { |ref| ref.include?('refs/pull') }
+          origins = each_ref - pull_requests
+
+          # If we're unable to find branch of this commit, it probably means that it is an external
+          # pull request and we need to figure out the name of the pull request and provide it
+          # instead in place of the branch name
+          branch = resolve_from_origins(origins, commit_hash, head)
+          branch ||= resolve_from_pull_requests(pull_requests, commit_hash)
+
+          sanitize_branch(branch)
+        end
+
+        # Figures out branch based on origin refs
+        # @param origin_refs [Array<String>] array with origin refs
+        # @param commit_hash [String] commit hash we're checking
+        # @param head [String] name of the head branch
+        # @return [String] origin branch of a commit hash
+        def resolve_from_origins(origin_refs, commit_hash, head)
           # We prioritize head branches as main branches of a commit if they are in the head
-          return head if each_ref.any? do |candidate|
+          return head if origin_refs.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
           end
 
           # First we select only those branches that not only contain but have our commit as
           # the last one (when we are checkout it will work like that as well). For the head
           # commits this is the most accurate
-          candidates = each_ref.select { |ref| ref.start_with?(commit_hash) }
+          candidates = origin_refs.select { |ref| ref.start_with?(commit_hash) }
           # And if non like that, we just fallback to all branches and pick the first one
-          candidates = each_ref if candidates.empty?
+          candidates = origin_refs if candidates.empty?
 
           # We pick only the branch name part as the bash command result contains some noise
           candidates.map! { |candidate| candidate.split("\t").last }
@@ -132,7 +149,26 @@ module SupportEngine
           end
 
           # And we pick the first one with and sanitize it to get only the branch name
-          (branch || candidates.first).tap(&method(:sanitize_branch))
+          (branch || candidates.first)
+        end
+
+        # When we cannot find branch of a commit hash, we try to find pull request as it probably
+        # means that it is a fork pull request
+        # @param pull_requests_refs [Array<String>] array with pull requests refs
+        # @param commit_hash [String] commit hash we're checking
+        # @return [String] most recent pull request name of a commit hash
+        def resolve_from_pull_requests(pull_requests_refs, commit_hash)
+          # First we select only those branches that not only contain but have our commit as
+          # the last one (when we are checkout it will work like that as well). For the head
+          # commits this is the most accurate
+          candidates = pull_requests_refs.select { |ref| ref.start_with?(commit_hash) }
+          # And if non like that, we just fallback to all branches and pick the first one
+          candidates = pull_requests_refs if candidates.empty?
+
+          # We pick only the branch name part as the bash command result contains some noise
+          candidates.map! { |candidate| candidate.split("\t").last }
+          candidates.delete_if { |candidate| candidate.include?('merge') }
+          candidates.sort_by { |candidate| candidate[/\d+/] }.last
         end
 
         # Removes unwanted prefixes from branch name
@@ -140,7 +176,7 @@ module SupportEngine
         # @return [String] sanitized same branch name
         def sanitize_branch(branch)
           raise SupportEngine::Errors::UnknownBranch unless branch
-          UNWANTED_PREFIXES.each { |prefix| branch.gsub!(prefix, '') }
+          UNWANTED_PARTS.each { |prefix| branch.gsub!(prefix, '') }
           branch
         end
       end
