@@ -11,11 +11,11 @@ RSpec.describe SupportEngine::Git::Log do
 
     it { expect(shortlog).to be_a(Array) }
 
-    context 'one committer' do
+    context 'when one committer' do
       it { expect(shortlog.count).to eq(1) }
     end
 
-    context 'three committers' do
+    context 'when three committers' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.location }
 
       it { expect(shortlog.count).to eq(3) }
