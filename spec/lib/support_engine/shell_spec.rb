@@ -24,11 +24,11 @@ RSpec.describe SupportEngine::Shell do
     context 'when we execute valid command with invalid options' do
       let(:command_with_options) { 'ls -no-such-option' }
 
-      context 'raise_on_invalid_exit true' do
+      context 'when raise_on_invalid_exit true' do
         it { expect { shell_result }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
       end
 
-      context 'raise_on_invalid_exit false' do
+      context 'when raise_on_invalid_exit false' do
         let(:raise_on_invalid_exit) { false }
 
         it 'expect to return a proper hash with errors' do

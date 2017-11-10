@@ -52,7 +52,7 @@ RSpec.describe SupportEngine::Git::Branch do
     let(:branch) { 'different-branch' }
     let(:commit_hash_originated_from) { commits_scope.all(path).last[:commit_hash] }
 
-    context 'master with branch' do
+    context 'when master with branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
       let(:branch) { 'master' }
       let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
@@ -63,7 +63,7 @@ RSpec.describe SupportEngine::Git::Branch do
       it { is_expected.to eq(commit_hash) }
     end
 
-    context 'master with weird branch' do
+    context 'when master with weird branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.location }
       let(:branch) { '#w@eird-branch' }
       let(:commit_hash) { commits_scope.all(path, branch: 'master').first[:commit_hash] }
@@ -74,7 +74,7 @@ RSpec.describe SupportEngine::Git::Branch do
       it { is_expected.to eq(commit_hash) }
     end
 
-    context 'master branch only' do
+    context 'when master branch only' do
       let(:branch) { 'master' }
       let(:path) { SupportEngine::Git::RepoBuilder::MasterOnly.location }
       let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
@@ -85,7 +85,7 @@ RSpec.describe SupportEngine::Git::Branch do
       it { is_expected.to eq(commit_hash) }
     end
 
-    context 'big branch' do
+    context 'when big branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
@@ -94,7 +94,7 @@ RSpec.describe SupportEngine::Git::Branch do
       it { is_expected.to eq(commit_hash_originated_from) }
     end
 
-    context 'big branch on cloned repository' do
+    context 'when big branch on cloned repository' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap }

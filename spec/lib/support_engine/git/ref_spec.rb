@@ -14,7 +14,7 @@ RSpec.describe SupportEngine::Git::Ref do
 
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
-    context 'result' do
+    context 'when it runs and we get the result' do
       it { expect(head).to be_instance_of(Hash) }
       it { expect(head).to have_key(:stdout) }
       it { expect(head).to have_key(:stderr) }
@@ -22,13 +22,13 @@ RSpec.describe SupportEngine::Git::Ref do
       it { expect(head).to eq(stdout: "master\n", stderr: '', exit_code: 0) }
     end
 
-    context 'raise_on_invalid_exit true by default' do
+    context 'when raise_on_invalid_exit true by default' do
       let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       it { expect { head }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
 
-    context 'raise_on_invalid_exit false' do
+    context 'when raise_on_invalid_exit false' do
       subject(:head) { described_class.head(path, false) }
 
       let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
@@ -47,13 +47,13 @@ RSpec.describe SupportEngine::Git::Ref do
   describe '#head!' do
     subject(:head!) { described_class.head!(path) }
 
-    context 'head ref' do
+    context 'when valid head ref' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
       it { expect(head!).to eq('master') }
     end
 
-    context 'broken head ref' do
+    context 'when broken head ref' do
       let(:path) { File.join(SupportEngine.gem_root, 'tmp', rand.to_s) }
       let(:dest) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
@@ -67,13 +67,13 @@ RSpec.describe SupportEngine::Git::Ref do
   describe '#head?' do
     subject(:head?) { described_class.head?(described_class.head(path, false)) }
 
-    context 'head ref' do
+    context 'when valid head ref' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
       it { expect(head?).to be true }
     end
 
-    context 'broken head ref' do
+    context 'when broken head ref' do
       let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       it { expect(head?).to be false }

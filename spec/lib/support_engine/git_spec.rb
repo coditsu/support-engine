@@ -11,12 +11,12 @@ RSpec.describe SupportEngine::Git do
     context 'when path exist and git repo with master branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
 
-      context 'should clone without errors' do
-        it { expect { clone_mirror }.not_to raise_error }
-        it { expect(clone_mirror).to be true }
+      it 'expect to clone without errors' do
+        expect { clone_mirror }.not_to raise_error
+        expect(clone_mirror).to be true
       end
 
-      context 'check if we cloned properly' do
+      context 'when we clone mirror' do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
@@ -29,12 +29,12 @@ RSpec.describe SupportEngine::Git do
     context 'when path exist and git repo with no master branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::NoMasterMirror.location }
 
-      context 'should clone without errors' do
-        it { expect { clone_mirror }.not_to raise_error }
-        it { expect(clone_mirror).to be true }
+      it 'expect to clone without errors' do
+        expect { clone_mirror }.not_to raise_error
+        expect(clone_mirror).to be true
       end
 
-      context 'check if we cloned properly' do
+      context 'when we clone mirror' do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
@@ -47,12 +47,12 @@ RSpec.describe SupportEngine::Git do
     context 'when path exist and git repo with broken head ref' do
       let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRefMirror.location }
 
-      context 'should clone without errors' do
-        it { expect { clone_mirror }.not_to raise_error }
-        it { expect(clone_mirror).to be true }
+      it 'expect to clone without errors' do
+        expect { clone_mirror }.not_to raise_error
+        expect(clone_mirror).to be true
       end
 
-      context 'check if we cloned properly' do
+      context 'when we clone mirror' do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
@@ -89,13 +89,13 @@ RSpec.describe SupportEngine::Git do
 
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
-    context 'already on a branch' do
+    context 'when already on a branch' do
       let(:ref) { 'master' }
 
       it { is_expected.to be true }
     end
 
-    context 'switch to abranch' do
+    context 'when switch to abranch' do
       let(:ref) { 'different-branch' }
 
       after { described_class.checkout(path, 'master') }
@@ -103,7 +103,7 @@ RSpec.describe SupportEngine::Git do
       it { is_expected.to be true }
     end
 
-    context 'switch to a commit hash' do
+    context 'when switch to a commit hash' do
       let(:ref) { SupportEngine::Git::Commits.all(path).last[:commit_hash] }
 
       after { described_class.checkout(path, 'master') }
@@ -111,7 +111,7 @@ RSpec.describe SupportEngine::Git do
       it { is_expected.to be true }
     end
 
-    context 'branch not exists' do
+    context 'when branch not exists' do
       let(:ref) { 'not-existent' }
 
       it { is_expected.to be false }
@@ -123,19 +123,19 @@ RSpec.describe SupportEngine::Git do
 
     let(:ref) { 'master' }
 
-    context 'already on branch' do
+    context 'when already on branch' do
       let(:message) { "Already on '#{ref}'" }
 
       it { is_expected.to be true }
     end
 
-    context 'switch to branch' do
+    context 'when switch to branch' do
       let(:message) { "Switched to branch '#{ref}'" }
 
       it { is_expected.to be true }
     end
 
-    context 'switch to commit' do
+    context 'when switch to commit' do
       let(:ref) { '7987d360dc73ac64ead4a26f8a451822e37788f5' }
       let(:message) do
         "Note: checking out '7987d360dc73ac64ead4a26f8a451822e37788f5'.\n\n" \
@@ -150,7 +150,7 @@ RSpec.describe SupportEngine::Git do
       it { is_expected.to be true }
     end
 
-    context 'invalid message' do
+    context 'when invalid message' do
       let(:message) { "error: pathspec 'not-existent' did not match any file(s) known to git." }
 
       it { is_expected.to be false }

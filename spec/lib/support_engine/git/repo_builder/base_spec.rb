@@ -49,7 +49,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
 
     before { allow(described_class).to receive(:location) { path } }
 
-    context 'dir exist' do
+    context 'when dir exist' do
       before do
         FileUtils.mkdir_p(path)
         destroy
@@ -58,7 +58,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder::Base do
       it { expect(Dir.exist?(path)).to be false }
     end
 
-    context 'dir does not exist' do
+    context 'when dir does not exist' do
       it 'expect not to try to remove it' do
         expect(FileUtils).not_to receive(:rm_r)
         destroy

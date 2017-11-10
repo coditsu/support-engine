@@ -47,7 +47,7 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect(all.size).to eq(0) }
     end
 
-    context 'for branch with weird name' do
+    context 'when we have branch with weird name' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.location }
       let(:commit) do
         SupportEngine::Shell.call_in_path(

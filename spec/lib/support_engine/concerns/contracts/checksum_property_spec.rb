@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SupportEngine::Concerns::Contracts::ChecksumProperty do
-  context '.checksum_property' do
+  describe '.checksum_property' do
     subject(:checksum_property) { base_contract.new(base_class.new) }
 
     let(:base_class) do

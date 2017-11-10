@@ -30,7 +30,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
   describe '.bare?' do
     subject(:bare?) { described_class.bare?(path) }
 
-    context 'true' do
+    context 'when bare repo' do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterBareMirror.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterBareMirror.bootstrap }
@@ -39,7 +39,7 @@ RSpec.describe SupportEngine::Git::RepoBuilder do
       it { expect(bare?).to be true }
     end
 
-    context 'false' do
+    context 'when not bare repo' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
       it { expect(bare?).to be false }
