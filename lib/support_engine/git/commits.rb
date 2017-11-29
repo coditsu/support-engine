@@ -110,7 +110,9 @@ module SupportEngine
         #   SupportEngine::Git::Commits.pull_requests('./') #=> []
         def pull_requests(path, limit: 50)
           cmd = [
-            "git for-each-ref 'refs/pull/*/head' --format='#{EACH_REF_FORMAT}' --count #{limit}",
+            "git for-each-ref 'refs/pull/*/head' --format='#{EACH_REF_FORMAT}'",
+            '--sort=-committerdate',
+            "--count #{limit}",
             '| awk -F \'^\' \'!x[$1]++\''
           ].join(' ')
 
