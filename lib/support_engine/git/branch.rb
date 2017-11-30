@@ -76,11 +76,12 @@ module SupportEngine
         # @param default_branch [String] default branch of a repository
         # @return [String] commit that branch originated from
         def originated_from(path, base_branch, default_branch)
+          is_pull_request = base_branch.include?('pull/')
           # This is a corner case for supporting external pull requests.
           # For them, we return branch that is not really a branch but a description of
-          # pull request (pull/NR). So in order to e able to determine the originated from, we need
-          # to unsanitize this, so it looks the way we git expects it (with refs and head)
-          base_branch = "refs/#{base_branch}/head" if base_branch.include?('pull/')
+          # pull request (pull/NR). So in order to be able to determine the originated from,
+          # we need to unsanitize this, so it looks the way git expects it (with refs and head)
+          base_branch = "refs/#{base_branch}/head" if is_pull_request
           # If the passed branch is the default branch, there is not really a merge-base other than
           # itself. In cases like that, instead of returning a previous commit, we return the
           # same commit that we're on. This will indicate for other parts of the system,
@@ -92,16 +93,20 @@ module SupportEngine
             SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
           end
 
+          # @note External pull requests are a corner case. For all the other cases, we always have
+          # a "local" branch that contains a given commit, so we always have at position 1 our
+          # commit as a merge candidate EXCEPT the case when our base_branch is a pull request from
+          # and external fork. In this case, there is no local branch on the first position but
+          # instead it's the proper merge base candidate
           show_cmd = [
             'git show -s --format="%ct %H"',
             bases.join(' '),
-            ' | sort -r | head -n2'
+            " | sort -r | head -n#{is_pull_request ? 1 : 2}"
           ].join(' ')
 
           SupportEngine::Shell
             .call_in_path(path, show_cmd)[:stdout]
-            .split(/\n|\s/)
-            .last
+            .split(/\n|\s/).last
         end
 
         private
