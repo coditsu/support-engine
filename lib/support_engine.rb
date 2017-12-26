@@ -7,6 +7,7 @@
   open3
   require_all
   shellwords
+  openssl
 ].each { |lib| require lib }
 
 # Shared libraries used across multiple apps
