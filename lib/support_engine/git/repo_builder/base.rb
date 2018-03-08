@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'committer'
+
 module SupportEngine
   module Git
     # Helper class that is used to create a dummy repository with some comits
