@@ -22,7 +22,7 @@ module SupportEngine
           raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
             unless result[:exit_code].zero?
           raise SupportEngine::Errors::FailedShellCommand, result[:stderr] \
-            if result[:stderr].include?('Not a git repository')
+            if result[:stderr].downcase.include?('not a git repository')
 
           result
         end
