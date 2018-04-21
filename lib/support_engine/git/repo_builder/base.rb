@@ -48,7 +48,7 @@ module SupportEngine
           def commit(message, author: committer, committed_at: Time.now)
             cmd = []
             cmd << "GIT_COMMITTER_DATE='#{committed_at}'"
-            cmd << "git commit -m '#{message}'"
+            cmd << "git commit --no-gpg-sign -m '#{message}'"
             cmd << "--author '#{author}'"
             cmd.join(' ')
           end
