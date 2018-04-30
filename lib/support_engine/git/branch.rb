@@ -68,6 +68,7 @@ module SupportEngine
             .each(&:strip!)
             .each { |branch| branch.gsub!('* ', '') }
             .delete_if { |a| a.include?(DETACH_STRING) }
+            .map { |a| a.split(' -> ').last }
         end
 
         # Figures out the commit that branch originated from
@@ -186,7 +187,7 @@ module SupportEngine
         # @return [String] sanitized same branch name
         def sanitize_branch(branch)
           raise SupportEngine::Errors::UnknownBranch unless branch
-          UNWANTED_PARTS.each { |prefix| branch.gsub!(prefix, '') }
+          UNWANTED_PARTS.each { |prefix| branch.gsub!(/#{prefix}/, '') }
           branch
         end
       end
