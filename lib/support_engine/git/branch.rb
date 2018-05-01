@@ -187,7 +187,7 @@ module SupportEngine
         # @return [String] sanitized same branch name
         def sanitize_branch(branch)
           raise SupportEngine::Errors::UnknownBranch unless branch
-          UNWANTED_PARTS.each { |prefix| branch.gsub!(/#{prefix}/, '') }
+          UNWANTED_PARTS.each { |prefix| branch.gsub!(/\A#{prefix}/, '') }
           branch
         end
       end
