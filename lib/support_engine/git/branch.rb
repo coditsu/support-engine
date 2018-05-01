@@ -179,7 +179,7 @@ module SupportEngine
           # We pick only the branch name part as the bash command result contains some noise
           candidates.map! { |candidate| candidate.split("\t").last }
           candidates.delete_if { |candidate| candidate.include?('merge') }
-          candidates.sort_by { |candidate| candidate[/\d+/] }.last
+          candidates.max_by { |candidate| candidate[/\d+/] }
         end
 
         # Removes unwanted prefixes from branch name

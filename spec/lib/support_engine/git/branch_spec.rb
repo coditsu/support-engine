@@ -107,25 +107,25 @@ RSpec.describe SupportEngine::Git::Branch do
   describe '.sanitize_branch' do
     subject(:sanitized) { described_class.send(:sanitize_branch, name) }
 
-    context 'breaking case with head inside' do
+    context 'when breaking case with head inside' do
       let(:name) { +'feat/header-hash' }
 
       it { expect(sanitized).to eq 'feat/header-hash' }
     end
 
-    context 'origin prefix case' do
+    context 'when origin prefix case' do
       let(:name) { +'origin/feat/user-bot-data' }
 
       it { expect(sanitized).to eq 'origin/feat/user-bot-data' }
     end
 
-    context 'refs/pull/297/head' do
-      let(:name) { +'refs/pull/297/head'}
+    context 'when refs/pull/297/head' do
+      let(:name) { +'refs/pull/297/head' }
 
       it { expect(sanitized).to eq 'pull/297' }
     end
 
-    context 'refs/heads/1.3-wip' do
+    context 'when refs/heads/1.3-wip' do
       let(:name) { +'refs/heads/1.3-wip' }
 
       it { expect(sanitized).to eq '1.3-wip' }
