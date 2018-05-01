@@ -7,7 +7,7 @@ module SupportEngine
       # When we want to resolve branches, we do that based on refs. Refs containt
       # parts that we don't need so this is a map of parts that we have to remove
       # in order to get proper branch names
-      UNWANTED_PARTS = %w[
+      UNWANTED_PREFIXES = %w[
         refs/remotes/origin/
         refs/remotes/
         refs/heads/
@@ -187,7 +187,9 @@ module SupportEngine
         # @return [String] sanitized same branch name
         def sanitize_branch(branch)
           raise SupportEngine::Errors::UnknownBranch unless branch
-          UNWANTED_PARTS.each { |prefix| branch.gsub!(/#{prefix}/, '') }
+          UNWANTED_PREFIXES.each { |prefix| branch.gsub!(/\A#{prefix}/, '') }
+          branch.gsub!(/\/head\z/, '') if branch.start_with?('pull/')
+
           branch
         end
       end
