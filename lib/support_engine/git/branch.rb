@@ -188,7 +188,7 @@ module SupportEngine
         def sanitize_branch(branch)
           raise SupportEngine::Errors::UnknownBranch unless branch
           UNWANTED_PREFIXES.each { |prefix| branch.gsub!(/\A#{prefix}/, '') }
-          branch.gsub!(/\/head\z/, '') if branch.start_with?('pull/')
+          branch.gsub!(%r[\/head\z], '') if branch.start_with?('pull/')
 
           branch
         end
