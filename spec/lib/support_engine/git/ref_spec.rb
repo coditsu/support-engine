@@ -58,6 +58,7 @@ RSpec.describe SupportEngine::Git::Ref do
       let(:dest) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
       before { SupportEngine::Git.clone_mirror(dest, path) }
+
       after { FileUtils.rm_rf(path) }
 
       it { expect(head!).to eq('develop') }

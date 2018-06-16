@@ -7,6 +7,7 @@ RSpec.describe SupportEngine::Shell::Yarn do
     end
 
     before { SupportEngine::Git::RepoBuilder::Yarn.bootstrap }
+
     after { SupportEngine::Git::RepoBuilder::Yarn.destroy }
 
     let(:path) { SupportEngine::Git::RepoBuilder::Yarn.location }

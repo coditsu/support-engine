@@ -13,6 +13,7 @@ RSpec.describe SupportEngine::Git::Extras do
     let(:path) { SupportEngine::Git::RepoBuilder::MasterWithHistory.location }
 
     before { SupportEngine::Git::RepoBuilder::MasterWithHistory.bootstrap }
+
     after { SupportEngine::Git::RepoBuilder::MasterWithHistory.destroy }
 
     it { expect(effort).to be_a(Array) }

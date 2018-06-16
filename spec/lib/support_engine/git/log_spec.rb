@@ -4,6 +4,7 @@ RSpec.describe SupportEngine::Git::Log do
   let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
   before { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.bootstrap }
+
   after { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.destroy }
 
   describe '.shortlog' do

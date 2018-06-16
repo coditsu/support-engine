@@ -58,6 +58,7 @@ RSpec.describe SupportEngine::Git::Branch do
       let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
 
       before { SupportEngine::Git::RepoBuilder::Master.bootstrap }
+
       after { SupportEngine::Git::RepoBuilder::Master.bootstrap }
 
       it { is_expected.to eq(commit_hash) }
@@ -68,8 +69,9 @@ RSpec.describe SupportEngine::Git::Branch do
       let(:branch) { '#w@eird-branch' }
       let(:commit_hash) { commits_scope.all(path, branch: 'master').first[:commit_hash] }
 
-      after { SupportEngine::Git::RepoBuilder::Master.bootstrap }
       before { SupportEngine::Git::RepoBuilder::MasterWithWeirdBranch.bootstrap }
+
+      after { SupportEngine::Git::RepoBuilder::Master.bootstrap }
 
       it { is_expected.to eq(commit_hash) }
     end
@@ -80,6 +82,7 @@ RSpec.describe SupportEngine::Git::Branch do
       let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
 
       before { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
+
       after { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
 
       it { is_expected.to eq(commit_hash) }
@@ -98,6 +101,7 @@ RSpec.describe SupportEngine::Git::Branch do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap }
+
       after { SupportEngine::Git::RepoBuilder::MasterWithBigBranchMirror.bootstrap }
 
       it { is_expected.to eq(commit_hash_originated_from) }
