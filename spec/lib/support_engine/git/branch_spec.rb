@@ -92,6 +92,7 @@ RSpec.describe SupportEngine::Git::Branch do
       let(:path) { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.location }
 
       before { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
+
       after { SupportEngine::Git::RepoBuilder::MasterWithBigBranch.bootstrap }
 
       it { is_expected.to eq(commit_hash_originated_from) }
