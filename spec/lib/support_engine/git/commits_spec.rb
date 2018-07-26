@@ -152,4 +152,39 @@ RSpec.describe SupportEngine::Git::Commits do
       it { expect { pull_requests }.to raise_error(SupportEngine::Errors::FailedShellCommand) }
     end
   end
+
+  describe '.diff' do
+    subject(:result) { described_class.diff(path, ref_a, ref_b) }
+
+    # We check against ourselfs not example repos so we can actually check true constant hashes
+    # that don't change with each spec execution
+    let(:path) { SupportEngine.gem_root }
+
+    context 'when ref a is ahead of ref b' do
+      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+      let(:ref_b) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when ref a is equal to ref b' do
+      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+
+      it { is_expected.to eq [] }
+    end
+
+    context 'when ref b is ahead of ref a' do
+      let(:ref_a) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
+      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+      let(:expected_commits) do
+        %w[
+          e56ca78a61e0336fa623636941672a5cf89f56fb
+          3db1f7501b98108dfbc6b35377495f1c57548c54
+        ]
+      end
+
+      it { is_expected.to eq expected_commits }
+    end
+  end
 end
