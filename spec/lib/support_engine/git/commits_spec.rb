@@ -161,22 +161,22 @@ RSpec.describe SupportEngine::Git::Commits do
     let(:path) { SupportEngine.gem_root }
 
     context 'when ref a is ahead of ref b' do
-      let(:ref_a) { 'master' }
+      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
       let(:ref_b) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
 
       it { is_expected.to eq [] }
     end
 
     context 'when ref a is equal to ref b' do
-      let(:ref_a) { 'master' }
-      let(:ref_b) { 'master' }
+      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
 
       it { is_expected.to eq [] }
     end
 
     context 'when ref b is ahead of ref a' do
       let(:ref_a) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
-      let(:ref_b) { 'master' }
+      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
       let(:expected_commits) do
         %w[
           e56ca78a61e0336fa623636941672a5cf89f56fb
