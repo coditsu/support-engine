@@ -161,8 +161,8 @@ RSpec.describe SupportEngine::Git::Commits do
     let(:path) { SupportEngine.gem_root }
 
     context 'when ref a is ahead of ref b' do
-      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
-      let(:ref_b) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
+      let(:ref_a) { 'df9e51d9a00b046e3b9363ab74cc265be9ab7f6c' }
+      let(:ref_b) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
 
       it { is_expected.to eq [] }
     end
@@ -175,14 +175,9 @@ RSpec.describe SupportEngine::Git::Commits do
     end
 
     context 'when ref b is ahead of ref a' do
-      let(:ref_a) { '30cdccc30f51e646ece7a92a0cbf44142838a50c' }
-      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
-      let(:expected_commits) do
-        %w[
-          e56ca78a61e0336fa623636941672a5cf89f56fb
-          3db1f7501b98108dfbc6b35377495f1c57548c54
-        ]
-      end
+      let(:ref_a) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
+      let(:ref_b) { 'df9e51d9a00b046e3b9363ab74cc265be9ab7f6c' }
+      let(:expected_commits) { %w[df9e51d9a00b046e3b9363ab74cc265be9ab7f6c] }
 
       it { is_expected.to eq expected_commits }
     end
