@@ -78,7 +78,7 @@ RSpec.describe SupportEngine::Git::Commits do
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
       let(:days_in_return_order) { latest_by_day.map { |commit| commit[:committed_at] } }
-      let(:expected_hash) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
+      let(:expected_hash) { '6774fb756c0d2a9773a471c362c687fde4973528' }
 
       it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
       it 'expect to have a committed_at desc order' do
@@ -161,23 +161,28 @@ RSpec.describe SupportEngine::Git::Commits do
     let(:path) { SupportEngine.gem_root }
 
     context 'when ref a is ahead of ref b' do
-      let(:ref_a) { 'df9e51d9a00b046e3b9363ab74cc265be9ab7f6c' }
-      let(:ref_b) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
+      let(:ref_a) { 'd0a3d16e5a19bae700f113ff25095551dd74053d' }
+      let(:ref_b) { '6774fb756c0d2a9773a471c362c687fde4973528' }
 
       it { is_expected.to eq [] }
     end
 
     context 'when ref a is equal to ref b' do
-      let(:ref_a) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
-      let(:ref_b) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
+      let(:ref_a) { '6774fb756c0d2a9773a471c362c687fde4973528' }
+      let(:ref_b) { '6774fb756c0d2a9773a471c362c687fde4973528' }
 
       it { is_expected.to eq [] }
     end
 
     context 'when ref b is ahead of ref a' do
-      let(:ref_a) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
-      let(:ref_b) { 'df9e51d9a00b046e3b9363ab74cc265be9ab7f6c' }
-      let(:expected_commits) { %w[df9e51d9a00b046e3b9363ab74cc265be9ab7f6c] }
+      let(:ref_a) { '6774fb756c0d2a9773a471c362c687fde4973528' }
+      let(:ref_b) { 'd0a3d16e5a19bae700f113ff25095551dd74053d' }
+      let(:expected_commits) do
+        %w[
+          d0a3d16e5a19bae700f113ff25095551dd74053d
+          a2b1f5828c8e5d7732af42aaaa024373ccb96873
+        ]
+      end
 
       it { is_expected.to eq expected_commits }
     end
