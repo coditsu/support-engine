@@ -78,7 +78,7 @@ RSpec.describe SupportEngine::Git::Commits do
     context 'when path exist and git repo' do
       let(:path) { Pathname.new './' }
       let(:days_in_return_order) { latest_by_day.map { |commit| commit[:committed_at] } }
-      let(:expected_hash) { '53647d2ec6ddf6dc51a8cd572aa1fb9c021d82ee' }
+      let(:expected_hash) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
 
       it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
       it 'expect to have a committed_at desc order' do
@@ -168,8 +168,8 @@ RSpec.describe SupportEngine::Git::Commits do
     end
 
     context 'when ref a is equal to ref b' do
-      let(:ref_a) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
-      let(:ref_b) { 'e56ca78a61e0336fa623636941672a5cf89f56fb' }
+      let(:ref_a) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
+      let(:ref_b) { '417963fe5ab07d0ed3b509da378798569aac8bc9' }
 
       it { is_expected.to eq [] }
     end
