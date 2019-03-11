@@ -7,6 +7,7 @@ RSpec.describe SupportEngine::Git::Status do
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
     before { SupportEngine::Git::Gc.reset(path) }
+
     after { SupportEngine::Git::Gc.reset(path) }
 
     context 'when no files were introduced' do
