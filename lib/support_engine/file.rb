@@ -4,7 +4,7 @@ module SupportEngine
   # Wrapper for file operations
   module File
     class << self
-      # Regexp to select encoding details from file -bi command resulsts
+      # Regex to select encoding details from file -bi command results
       CHARSET_DETECT_REGEXP = /charset=(.*)\n/.freeze
       # Default fallback encoding
       DEFAULT_ENCODING = 'utf-8'

@@ -25,7 +25,7 @@ Time.zone = 'UTC'
 
 SimpleCov.minimum_coverage 100
 
-# Don't include unnecessary stuff into rcov
+# Don't include unnecessary stuff into coverage
 SimpleCov.start do
   add_filter '/.bundle/'
   add_filter '/doc/'
