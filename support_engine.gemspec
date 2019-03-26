@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://coditsu.io'
   spec.summary       = 'Shared libraries for Coditsu Quality Assurance tool'
   spec.description   = 'Shared libraries for Coditsu Quality Assurance tool'
-  spec.license       = 'MIT'
+  spec.license       = 'LGPL-3.0'
 
   spec.add_dependency 'activesupport'
   spec.add_dependency 'require_all'
