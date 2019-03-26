@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.version       = ::SupportEngine::VERSION
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Maciej Mensfeld']
-  spec.email         = %w[maciej@mensfeld.pl]
+  spec.email         = %w[contact@coditsu.io]
   spec.homepage      = 'https://coditsu.io'
   spec.summary       = 'Shared libraries for Coditsu Quality Assurance tool'
   spec.description   = 'Shared libraries for Coditsu Quality Assurance tool'
