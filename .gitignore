@@ -20,3 +20,4 @@ config/s3.yml
 coverage
 spec/old
 .byebug_history
+.coditsu/local.yml
