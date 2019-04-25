@@ -62,11 +62,11 @@ module SupportEngine
         end
 
         # Build values from proc or array
-        # @overload values(from)
+        # @overload values(name, from)
         #   @param name [Symbol] Name of a property under which the generated value will
         #     be stored
         #   @param from [Array<Symbol>] array with names
-        # @overload values(from)
+        # @overload values(name, from)
         #   @param name [Symbol] Name of a property under which the generated value will
         #     be stored
         #   @param from [Proc] proc that will be evaluated in the contract context
