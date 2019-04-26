@@ -38,6 +38,7 @@ module SupportEngine
           #     be stored
           #   @param from [Array<Symbol>] array with names of properties that will be used to
           #     build checksum property
+          #   @param type [Class] type of digest that we want to use
           # @overload checksum_property(name, from:)
           #   Tells contract that it should build checksum property based on the proc
           #   return value (that needs to be array)
