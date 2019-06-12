@@ -5,6 +5,17 @@ module SupportEngine
     # Module for handling log
     class Log < Base
       class << self
+        # Returns a shortlog describing all the commiters for project that is
+        #   under path
+        # @param path [String] path of a current repository build
+        # @return [Array<String>] Lines returned by the git shortlog command
+        # @example
+        #   SupportEngine::Git::Log.shortlog('./') #=>
+        #   ["    13\tMaciej Mensfeld <maciej@mensfeld.pl>"]
+        def shortlog(path)
+          Shell::Git.call_in_path(path, :shortlog, '-sn -e --all')
+        end
+
         # Returns an information about last commiter that changed/created this
         #   file. We use it to blame users for file related errors, assuming that
         #   the fault goes always to a person that changed the file last and

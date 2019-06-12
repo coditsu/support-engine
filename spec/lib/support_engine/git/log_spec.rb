@@ -7,6 +7,29 @@ RSpec.describe SupportEngine::Git::Log do
 
   after { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.destroy }
 
+  describe '.shortlog' do
+    subject(:shortlog) { described_class.shortlog(path) }
+
+    it { expect(shortlog).to be_a(Array) }
+
+    context 'when one committer' do
+      it { expect(shortlog.count).to eq(1) }
+    end
+
+    context 'when three committers' do
+      let(:path) { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.location }
+
+      it { expect(shortlog.count).to eq(3) }
+      it do
+        expect(
+          shortlog.any? { |v| v.include?(SupportEngine::Git::RepoBuilder::Committer.email) }
+        ).to be true
+      end
+      it { expect(shortlog.any? { |v| v.include?('committer2@coditsu.io') }).to be true }
+      it { expect(shortlog.any? { |v| v.include?('committer3@coditsu.io') }).to be true }
+    end
+  end
+
   describe '.file_last_committer' do
     subject(:file_last_committer) { described_class.file_last_committer(path, 'master.rb') }
 
