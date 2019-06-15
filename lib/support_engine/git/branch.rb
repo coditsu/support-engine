@@ -100,7 +100,9 @@ module SupportEngine
 
           bases = candidates.map do |branch|
             cmd = "git merge-base '#{branch}' '#{base_branch}'"
-            SupportEngine::Shell.call_in_path(path, cmd)[:stdout].strip
+            # We silence errors as there are rare cases in which, there is no common parent
+            # as the repo history was rewritten or other "forced" things happened
+            Shell.call_in_path(path, cmd, raise_on_invalid_exit: false)[:stdout].strip
           end
 
           # @note External pull requests are a corner case. For all the other cases, we always have
@@ -110,11 +112,11 @@ module SupportEngine
           # instead it's the proper merge base candidate
           show_cmd = [
             'git show -s --format="%ct %H"',
-            bases.join(' '),
+            bases.uniq.join(' '),
             " | sort -r | head -n#{is_pull_request ? 1 : 2}"
           ].join(' ')
 
-          SupportEngine::Shell
+          Shell
             .call_in_path(path, show_cmd)[:stdout]
             .split(/\n|\s/).last
         end
