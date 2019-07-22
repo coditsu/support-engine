@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'fileutils'
+%w[
+  active_support/inflector
+  fileutils
+].each(&method(:require))
 
 module SupportEngine
   # RSpec extension for the `RSpec.describe` subject class auto-discovery
