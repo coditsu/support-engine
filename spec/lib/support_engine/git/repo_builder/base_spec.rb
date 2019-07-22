@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::RepoBuilder::Base do
+RSpec.describe_current do
   describe '.location' do
     subject(:location) { described_class.location }
 

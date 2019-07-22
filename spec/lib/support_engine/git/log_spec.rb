@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Log do
+RSpec.describe_current do
   let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 
   before { SupportEngine::Git::RepoBuilder::MasterMultipleCommitters.bootstrap }

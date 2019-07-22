@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git do
+RSpec.describe_current do
   describe '#clone_mirror' do
     subject(:clone_mirror) { described_class.clone_mirror(path, dest) }
 

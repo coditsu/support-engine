@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Branch do
+RSpec.describe_current do
   let(:commits_scope) { SupportEngine::Git::Commits }
   let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
 

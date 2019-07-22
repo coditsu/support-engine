@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Status do
+RSpec.describe_current do
   describe '#introduced' do
     subject(:introduced) { described_class.introduced(path) }
 

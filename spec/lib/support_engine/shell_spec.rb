@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Shell do
+RSpec.describe_current do
   describe '#call' do
     subject(:shell_result) do
       described_class.call(

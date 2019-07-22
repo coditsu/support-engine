@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::RepoBuilder::Committer do
+RSpec.describe_current do
   let(:committer_name) { 'Committer' }
   let(:committer_email) { 'committer@coditsu.io' }
 

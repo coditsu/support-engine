@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Commits do
+RSpec.describe_current do
   describe '.all' do
     subject(:all) { described_class.all(path) }
 

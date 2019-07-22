@@ -14,6 +14,7 @@ end
 
 require 'support_engine'
 require 'support_engine/git/repo_builder'
+require 'support_engine/rspec_locator'
 
 require 'reform'
 require 'reform/form'
@@ -54,3 +55,5 @@ RSpec.configure do |config|
     SupportEngine::Git::RepoBuilder.destroy
   end
 end
+
+RSpec.extend SupportEngine::RSpecLocator.new(__FILE__)

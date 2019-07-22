@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Errors do
+RSpec.describe_current do
   specify do
     expect(described_class::Base.ancestors).to include(StandardError)
   end

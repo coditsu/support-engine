@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Shell::Git do
+RSpec.describe_current do
   describe '#call_in_path' do
     subject(:shell_result) do
       described_class.call_in_path(path, command, options)
