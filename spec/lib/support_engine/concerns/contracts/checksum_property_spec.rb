@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Concerns::Contracts::ChecksumProperty do
+RSpec.describe_current do
   describe '.checksum_property' do
     subject(:checksum_property) { base_contract.new(base_class.new) }
 

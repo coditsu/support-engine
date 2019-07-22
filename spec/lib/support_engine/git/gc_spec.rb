@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Gc do
+RSpec.describe_current do
   describe '#reset' do
     subject(:reset) { described_class.reset(path) }
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::RepoBuilder::BrokenHeadRefMirror do
+RSpec.describe_current do
   describe '#bootstrap' do
     subject(:bootstrap) { described_class.bootstrap }
 

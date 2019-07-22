@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine do
+RSpec.describe_current do
   subject(:support_engine) { described_class }
 
   describe '#gem_root' do

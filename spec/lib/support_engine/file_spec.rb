@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::File do
+RSpec.describe_current do
   describe '#encoding' do
     subject(:file_encoding) { described_class.encoding(path) }
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Ref do
+RSpec.describe_current do
   describe '#latest' do
     subject(:latest) { described_class.latest(path) }
 

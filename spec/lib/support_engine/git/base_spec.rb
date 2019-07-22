@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SupportEngine::Git::Base do
+RSpec.describe_current do
   describe '.fail_if_invalid' do
     subject(:flow) { described_class.send(:fail_if_invalid, result) }
 
