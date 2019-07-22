@@ -6,8 +6,9 @@ module SupportEngine
   # RSpec extension for the `RSpec.describe` subject class auto-discovery
   # It automatically detects the class name that should be described in the given spec
   # based on the spec file path.
-  # @example Just include it, extend and use `RSpec#describe_current` instead of `RSpec#describe`
-  #   RSpec.extend RSpecLocator
+  # @example Just include it, extend with instantiation and use `RSpec#describe_current`
+  #   instead of `RSpec#describe`
+  #   RSpec.extend SupportEngine::RSpecLocator.new(__FILE__)
   class RSpecLocator < Module
     # @param  spec_helper_file_path [String] path to the spec_helper.rb file
     def initialize(spec_helper_file_path)
@@ -31,20 +32,18 @@ module SupportEngine
 
     # @return [Class] class name for the RSpec `#describe` method
     def inherited
-      scopes = caller(2..2)
-               .first
-               .split(':')
-               .first
-               .gsub(@specs_root_dir, '')
-               .gsub('_spec.rb', '')
-               .split('/')
-               .delete_if(&:empty?)[1..-1]
-
-
-      scopes
-        .join('/')
-        .camelize
-        .constantize
+      caller(2..2)
+      .first
+      .split(':')
+      .first
+      .gsub(@specs_root_dir, '')
+      .gsub('_spec.rb', '')
+      .split('/')
+      .delete_if(&:empty?)
+      .itself[1..-1]
+      .join('/')
+      .camelize
+      .constantize
     end
   end
 end
