@@ -33,17 +33,17 @@ module SupportEngine
     # @return [Class] class name for the RSpec `#describe` method
     def inherited
       caller(2..2)
-      .first
-      .split(':')
-      .first
-      .gsub(@specs_root_dir, '')
-      .gsub('_spec.rb', '')
-      .split('/')
-      .delete_if(&:empty?)
-      .itself[1..-1]
-      .join('/')
-      .camelize
-      .constantize
+        .first
+        .split(':')
+        .first
+        .gsub(@specs_root_dir, '')
+        .gsub('_spec.rb', '')
+        .split('/')
+        .delete_if(&:empty?)
+        .itself[1..-1]
+        .join('/')
+        .camelize
+        .constantize
     end
   end
 end
