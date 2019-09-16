@@ -140,8 +140,8 @@ module SupportEngine
         def diff(path, ref_a, ref_b)
           cmd = [
             'git',
-            'rev-list',
-            '--ancestry-path',
+            'log',
+            '--format="%H"',
             "'#{ref_a}'..'#{ref_b}'"
           ].join(' ')
 
