@@ -20,6 +20,7 @@ RSpec.describe_current do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+
         it do
           expect(described_class.checkout(dest, 'different-branch')).to be true
         end
@@ -38,6 +39,7 @@ RSpec.describe_current do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+
         it do
           expect(described_class.checkout(dest, 'different-branch')).to be true
         end
@@ -56,6 +58,7 @@ RSpec.describe_current do
         before { clone_mirror }
 
         it { expect(SupportEngine::Git::RepoBuilder.bare?(dest)).to be false }
+
         it do
           expect(described_class.checkout(dest, 'different-branch')).to be true
         end

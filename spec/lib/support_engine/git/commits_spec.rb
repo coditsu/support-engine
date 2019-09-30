@@ -19,6 +19,7 @@ RSpec.describe_current do
       it { expect(single_commit).not_to be_nil }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }
       it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
+
       it 'expect to have a committed_at desc order' do
         expect(all[0][:committed_at]).to be > all[1][:committed_at]
       end
@@ -64,6 +65,7 @@ RSpec.describe_current do
       it { expect(single_commit).not_to be_nil }
       it { expect(single_commit[:committed_at]).to eq(committed_at) }
       it { expect(single_commit[:commit_hash]).to eq(commit_hash) }
+
       it 'expect to have a committed_at desc order' do
         expect(all[0][:committed_at]).to be > all[1][:committed_at]
       end
@@ -81,6 +83,7 @@ RSpec.describe_current do
       let(:expected_hash) { '6774fb756c0d2a9773a471c362c687fde4973528' }
 
       it { expect(latest_by_day.last[:commit_hash]).to eq expected_hash }
+
       it 'expect to have a committed_at desc order' do
         # We compare to reverse because Ruby makes an asc sort
         expect(days_in_return_order).to eq days_in_return_order.sort.reverse
