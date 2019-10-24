@@ -8,8 +8,8 @@ RSpec.describe_current do
     let(:options) { '--yaml' }
     let(:args) do
       [
-         "yarn run --silent #{command} #{options}",
-         raise_on_invalid_exit: true
+        "yarn run --silent #{command} #{options}",
+        raise_on_invalid_exit: true
       ]
     end
 
