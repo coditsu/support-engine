@@ -29,6 +29,9 @@ loader.setup
 
 # Shared libraries used across multiple apps
 module SupportEngine
+  # Current engine version
+  VERSION = '0.1.4'
+
   class << self
     # @return [String] root path to this gem
     # @example
@@ -38,3 +41,5 @@ module SupportEngine
     end
   end
 end
+
+loader.eager_load
