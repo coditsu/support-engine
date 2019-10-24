@@ -1,6 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.describe_current do
+  describe '#call' do
+    subject(:shell_result) { described_class.call(command, options) }
+
+    let(:command) { 'cloc' }
+    let(:options) { '--yaml' }
+    let(:args) do
+      [
+         "yarn run --silent #{command} #{options}",
+         raise_on_invalid_exit: true
+      ]
+    end
+
+    it 'expect to run yarn in shell' do
+      expect(SupportEngine::Shell::Utf8).to receive(:call).with(*args)
+      shell_result
+    end
+  end
+
   describe '#call_in_path' do
     subject(:shell_result) do
       described_class.call_in_path(path, command, options)

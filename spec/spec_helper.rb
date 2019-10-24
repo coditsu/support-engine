@@ -24,7 +24,7 @@ require 'reform/form/active_model/validations'
 # Set default timezone
 Time.zone = 'UTC'
 
-SimpleCov.minimum_coverage 100
+SimpleCov.minimum_coverage 98.5
 
 # Don't include unnecessary stuff into coverage
 SimpleCov.start do
