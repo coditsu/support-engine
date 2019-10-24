@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'LGPL-3.0'
 
   spec.add_dependency 'activesupport'
-  spec.add_dependency 'require_all'
+  spec.add_dependency 'zeitwerk'
   spec.add_development_dependency 'bundler'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }

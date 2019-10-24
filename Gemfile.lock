@@ -3,7 +3,7 @@ PATH
   specs:
     support_engine (0.1.4)
       activesupport
-      require_all
+      zeitwerk
 
 GEM
   remote: https://rubygems.org/
@@ -45,7 +45,6 @@ GEM
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
       uber (< 0.2.0)
-    require_all (3.0.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
