@@ -19,6 +19,7 @@ class Inflector < Zeitwerk::Inflector
   # @return [String] class/module name
   def camelize(basename, abspath)
     return 'RSpecLocator' if basename == 'rspec_locator'
+    return 'VERSION' if basename == 'version'
 
     super
   end
@@ -29,9 +30,6 @@ loader.setup
 
 # Shared libraries used across multiple apps
 module SupportEngine
-  # Current engine version
-  VERSION = '0.1.4'
-
   class << self
     # @return [String] root path to this gem
     # @example
