@@ -17,7 +17,7 @@ GEM
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2)
     byebug (11.1.1)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     declarative (0.0.10)
     declarative-builder (0.1.0)
       declarative-option (< 0.2.0)
