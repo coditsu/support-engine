@@ -13,7 +13,12 @@ module SupportEngine
         # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
         # @return [Hash] SupportEngine::Shell.call execution hash
         def call(command_with_options, raise_on_invalid_exit: true)
-          encode(Shell.call(command_with_options, raise_on_invalid_exit: raise_on_invalid_exit))
+          encode(
+            Shell.call(
+              command_with_options,
+              raise_on_invalid_exit: raise_on_invalid_exit
+            )
+          )
         end
 
         # @param path [String, Pathname] path to a place where git repo is
@@ -21,7 +26,13 @@ module SupportEngine
         # @param raise_on_invalid_exit [Boolean] raise exception when exit code is not 0
         # @return [Hash] SupportEngine::Shell.call execution hash
         def call_in_path(path, command, raise_on_invalid_exit: true)
-          encode(Shell.call_in_path(path, command, raise_on_invalid_exit: raise_on_invalid_exit))
+          encode(
+            Shell.call_in_path(
+              path,
+              command,
+              raise_on_invalid_exit: raise_on_invalid_exit
+            )
+          )
         end
 
         private
@@ -30,11 +41,11 @@ module SupportEngine
         # @param result [Hash] SupportEngine::Shell.call execution hash
         # @return [Hash] SupportEngine::Shell.call execution hash encoded in UTF-8
         def encode(result)
-          encoding = ['UTF-8', invalid: :replace, undef: :replace, replace: '']
+          options = { invalid: :replace, undef: :replace, replace: '' }
 
           {
-            stdout: result[:stdout].encode(*encoding),
-            stderr: result[:stderr].encode(*encoding),
+            stdout: result[:stdout].encode('UTF-8', **options),
+            stderr: result[:stderr].encode('UTF-8', **options),
             exit_code: result[:exit_code]
           }
         end

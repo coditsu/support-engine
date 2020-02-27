@@ -3,7 +3,7 @@
 RSpec.describe_current do
   describe '#call' do
     subject(:shell_result) do
-      described_class.call(command_with_options, options)
+      described_class.call(command_with_options, **options)
     end
 
     let(:command_with_options) { 'ls' }
@@ -20,7 +20,7 @@ RSpec.describe_current do
 
   describe '#call_in_path' do
     subject(:shell_result) do
-      described_class.call_in_path(path, command_with_options, options)
+      described_class.call_in_path(path, command_with_options, **options)
     end
 
     let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
