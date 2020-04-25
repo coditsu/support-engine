@@ -42,7 +42,7 @@ GEM
     reform-rails (0.1.7)
       activemodel (>= 3.2)
       reform (>= 2.2.0)
-    reline (0.1.3)
+    reline (0.1.4)
       io-console (~> 0.5)
     representable (3.0.4)
       declarative (< 0.1.0)
