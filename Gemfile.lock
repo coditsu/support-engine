@@ -35,7 +35,7 @@ GEM
     io-console (0.5.6)
     irb (1.2.4)
       reline (>= 0.0.1)
-    minitest (5.14.0)
+    minitest (5.14.1)
     reform (2.2.4)
       disposable (>= 0.4.1)
       representable (>= 2.4.0, < 3.1.0)
