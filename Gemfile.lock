@@ -6,7 +6,7 @@ PATH
       zeitwerk
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://my.diffend.io/protect/gems/
   specs:
     activemodel (6.0.3.1)
       activesupport (= 6.0.3.1)
