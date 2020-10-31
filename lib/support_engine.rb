@@ -35,7 +35,7 @@ module SupportEngine
     # @example
     #   SupportEngine.gem_root #=> '/home/user/.gems/support_engine'
     def gem_root
-      ::File.expand_path('../..', __FILE__)
+      ::File.expand_path('..', __dir__)
     end
   end
 end
