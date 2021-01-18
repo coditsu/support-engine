@@ -6,6 +6,9 @@ jobs:
       - image: cimg/ruby:3.0.0
     steps:
       - checkout
+      - run: |
+          git config --global user.email "ci@coditsu.io"
+          git config --global user.name "Coditsu CI"
       - run: gem install bundler --no-document
       - run: bundle install --path vendor/bundle
       - run: bundle exec rspec
