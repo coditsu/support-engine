@@ -1,0 +1,28 @@
+version: 2
+
+jobs:
+  specs:
+    docker:
+      - image: cimg/ruby:3.0.0
+    steps:
+      - checkout
+      - run: gem install bundler --no-document
+      - run: bundle install --path vendor/bundle
+      - run: bundle exec rspec
+
+  diffend:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run: bundle plugin install diffend
+      - run: bundle secure
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - diffend
+      - specs:
+          requires:
+            - diffend
