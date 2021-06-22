@@ -8,9 +8,9 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - '3.0'
+          - '2.7'
         include:
-          - ruby: '3.0'
+          - ruby: '2.7'
             coverage: 'true'
 
     steps:
