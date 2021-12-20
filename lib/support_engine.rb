@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 %w[
+  active_support/isolated_execution_state
   active_support/concern
   active_support/inflector
   active_support/time

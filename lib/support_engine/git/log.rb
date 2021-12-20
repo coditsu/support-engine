@@ -51,7 +51,7 @@ module SupportEngine
         def shortstat(path, limit: nil, since: 20.years.ago)
           options = []
           options << '--shortstat'
-          options << "--since=\"#{since.to_s(:db)}\""
+          options << "--since=\"#{since.to_formatted_s(:db)}\""
           options << '--format="oneline"'
           options << "-n#{limit}" if limit
 
