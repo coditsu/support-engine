@@ -39,8 +39,10 @@ module SupportEngine
         #   SupportEngine::Git::Commits.all('./') #=> [{:commit_hash=>"421cd..."]
         def all(path, branch: '--all', since: 20.years.ago)
           cmd = [
-            "git log #{branch}", '--pretty="%cD^%H"', '--no-merges',
-            "--since=\"#{since.to_s(:db)}\""
+            "git log #{branch}",
+            '--pretty="%cD^%H"',
+            '--no-merges',
+            "--since=\"#{since.to_formatted_s(:db)}\""
           ].join(' ')
 
           base = call_in_path!(path, cmd)[:stdout].split("\n")
@@ -67,8 +69,10 @@ module SupportEngine
         #     [{:commit_hash=>"421cd..."]
         def latest_by_day(path, branch: '--all', since: 20.years.ago, limit: nil)
           cmd = [
-            "git log #{branch} --date=local", '--format="%ci|%H"',
-            "--since=\"#{since.to_s(:db)}\"", limit ? "-n#{limit}" : '', '| sort -u -r -k1,1'
+            "git log #{branch} --date=local",
+            '--format="%ci|%H"',
+            "--since=\"#{since.to_formatted_s(:db)}\"",
+            limit ? "-n#{limit}" : '', '| sort -u -r -k1,1'
           ].join(' ')
 
           base = call_in_path!(path, cmd)[:stdout].split("\n")
