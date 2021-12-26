@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Shared libraries for Coditsu Quality Assurance tool'
   spec.license       = 'LGPL-3.0'
 
-  spec.add_dependency 'activesupport'
+  spec.add_dependency 'activesupport', '< 7'
   spec.add_dependency 'zeitwerk'
   spec.add_development_dependency 'bundler'
 
