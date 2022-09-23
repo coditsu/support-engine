@@ -30,6 +30,7 @@ loader.setup
 
 # Shared libraries used across multiple apps
 module SupportEngine
+  # Instance of clock
   CLOCK = Clock.new
 
   class << self
