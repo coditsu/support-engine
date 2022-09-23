@@ -30,6 +30,8 @@ loader.setup
 
 # Shared libraries used across multiple apps
 module SupportEngine
+  CLOCK = Clock.new
+
   class << self
     # @return [String] root path to this gem
     # @example
