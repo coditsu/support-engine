@@ -3,15 +3,15 @@
 module SupportEngine
   module Git
     module RepoBuilder
-      # Creates repository with no master branch and broken head ref
+      # Creates repository with no main branch and broken head ref
       class BrokenHeadRef < Base
         # Steps we need to take in order to setup dummy repository
         BOOTSTRAP_CMD = [
           "git init #{location}",
           "cd #{location}",
-          'echo "hash = { \'test\' => 1 }" > master.rb',
+          'echo "hash = { \'test\' => 1 }" > main.rb',
           'git add --all ./',
-          commit('master commit'),
+          commit('main commit'),
           'git branch develop',
           'git checkout develop',
           'echo "hash = { \'test\' => 2 }" > develop.rb',
@@ -24,8 +24,8 @@ module SupportEngine
           commit('different-branch commit'),
           'git checkout develop',
           "git remote add origin #{origin}",
-          'git branch -D master',
-          'echo "ref: refs/heads/master" > .git/HEAD'
+          'git branch -D main',
+          'echo "ref: refs/heads/main" > .git/HEAD'
         ].join(' && ').freeze
       end
     end
