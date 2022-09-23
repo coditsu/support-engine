@@ -7,6 +7,6 @@ RSpec.describe_current do
     subject(:measure) { instance.measure { sleep(0.01) } }
 
     it { is_expected.to be_a(Array) }
-    it { expect(measure).to eq([0, 11]) }
+    it { expect(measure).to eq([0, 10]) }
   end
 end
