@@ -29,6 +29,9 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{matrix.ruby}}
+      - name: Git version
+        run: |
+          git --version
       - name: Install latest bundler
         run: |
           gem install bundler --no-document
