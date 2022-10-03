@@ -66,7 +66,7 @@ GEM
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    zeitwerk (2.6.0)
+    zeitwerk (2.6.1)
 
 PLATFORMS
   arm64-darwin
