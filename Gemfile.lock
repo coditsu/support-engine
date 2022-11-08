@@ -66,7 +66,7 @@ GEM
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    zeitwerk (2.6.3)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   arm64-darwin
@@ -84,4 +84,4 @@ DEPENDENCIES
   support_engine!
 
 BUNDLED WITH
-   2.3.24
+   2.3.25
