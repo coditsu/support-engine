@@ -27,7 +27,7 @@ GEM
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     io-console (0.5.11)
-    irb (1.4.2)
+    irb (1.4.3)
       reline (>= 0.3.0)
     minitest (5.16.3)
     reform (2.6.2)
@@ -84,4 +84,4 @@ DEPENDENCIES
   support_engine!
 
 BUNDLED WITH
-   2.3.25
+   2.3.26
