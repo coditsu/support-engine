@@ -27,10 +27,10 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.6.0)
-    irb (1.8.0)
-      rdoc (~> 6.5)
-      reline (>= 0.3.6)
-    minitest (5.19.0)
+    irb (1.8.1)
+      rdoc
+      reline (>= 0.3.8)
+    minitest (5.20.0)
     psych (5.1.0)
       stringio
     rdoc (6.5.0)
