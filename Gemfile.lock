@@ -31,7 +31,7 @@ GEM
       rdoc
       reline (>= 0.3.8)
     minitest (5.20.0)
-    psych (5.1.1)
+    psych (5.1.1.1)
       stringio
     rdoc (6.5.0)
       psych (>= 4.0.0)
@@ -90,4 +90,4 @@ DEPENDENCIES
   support_engine!
 
 BUNDLED WITH
-   2.4.20
+   2.4.21
