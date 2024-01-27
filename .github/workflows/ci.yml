@@ -79,6 +79,21 @@ jobs:
           CODITSU_API_SECRET: ${{ secrets.CODITSU_API_SECRET }}
         run: \curl -sSL https://api.coditsu.io/run/ci | bash
 
+  coditsu-candidate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Coditsu
+        env:
+          CODITSU_API_KEY: ${{ secrets.CODITSU_API_KEY }}
+          CODITSU_API_SECRET: ${{ secrets.CODITSU_API_SECRET }}
+          CODITSU_IMAGE_TAG: candidate
+        run: \curl -sSL https://api.coditsu.io/run/ci | bash
+
 on:
   push:
   schedule:
