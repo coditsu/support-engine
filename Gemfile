@@ -7,7 +7,7 @@ plugin 'diffend'
 gemspec
 
 group :development, :test do
-  gem 'byebug'
+  gem 'debug'
   gem 'irb'
   gem 'reform'
   gem 'reform-rails'
