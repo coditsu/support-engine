@@ -21,10 +21,10 @@ RSpec.describe_current do
     let(:base_contract) do
       included_class = described_class
 
-      Class.new(::Reform::Form) do
-        include ::Reform::Form::Property
-        include ::Reform::Form::ActiveModel
-        include ::Reform::Form::ActiveModel::Validations
+      Class.new(Reform::Form) do
+        include Reform::Form::Property
+        include Reform::Form::ActiveModel
+        include Reform::Form::ActiveModel::Validations
         include included_class
 
         property :name

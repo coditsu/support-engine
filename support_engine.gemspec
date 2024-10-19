@@ -7,7 +7,7 @@ require 'support_engine/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'support_engine'
-  spec.version       = ::SupportEngine::VERSION
+  spec.version       = SupportEngine::VERSION
   spec.platform      = Gem::Platform::RUBY
   spec.authors       = ['Maciej Mensfeld']
   spec.email         = %w[contact@coditsu.io]
