@@ -4,9 +4,10 @@
   active_support/concern
   active_support/inflector
   active_support/time
+  logger
   open3
-  shellwords
   openssl
+  shellwords
   zeitwerk
 ].each { |lib| require lib }
 
