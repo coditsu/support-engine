@@ -12,7 +12,7 @@ module SupportEngine
 
     # @return [Integer]
     def current
-      Process.clock_gettime(Process::CLOCK_MONOTONIC, :millisecond)
+      Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_millisecond)
     end
   end
 end
