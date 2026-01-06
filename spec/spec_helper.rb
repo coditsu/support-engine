@@ -15,11 +15,6 @@ require 'support_engine'
 require 'support_engine/git/repo_builder'
 require 'support_engine/rspec_locator'
 
-require 'reform'
-require 'reform/form'
-require 'reform/form/active_model'
-require 'reform/form/active_model/validations'
-
 # Set default timezone
 Time.zone = 'UTC'
 
