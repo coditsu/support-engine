@@ -9,7 +9,7 @@ module SupportEngine
         def self.create_commits
           30.downto(0).flat_map do |number|
             [
-              "echo \"hash = { \'test\' => #{number} }\" > master.rb",
+              "echo \"hash = { 'test' => #{number} }\" > master.rb",
               'git add --all ./',
               commit("master commit #{number}", committed_at: number.days.ago),
               "git branch different-branch-#{number}",
@@ -23,13 +23,15 @@ module SupportEngine
         end
 
         # Steps we need to take in order to setup dummy repository
-        BOOTSTRAP_CMD = [
-          "git init #{location}",
-          "cd #{location}",
-          create_commits,
-          'git checkout master',
-          "git remote add origin #{origin}"
-        ].join(' && ').freeze
+        def self.bootstrap_cmd
+          [
+            "git init #{location}",
+            "cd #{location}",
+            create_commits,
+            'git checkout master',
+            "git remote add origin #{origin}"
+          ].join(' && ')
+        end
       end
     end
   end

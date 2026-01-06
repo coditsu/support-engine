@@ -16,7 +16,7 @@ module SupportEngine
           encode(
             Shell.call(
               command_with_options,
-              raise_on_invalid_exit: raise_on_invalid_exit
+              raise_on_invalid_exit:
             )
           )
         end
@@ -30,7 +30,7 @@ module SupportEngine
             Shell.call_in_path(
               path,
               command,
-              raise_on_invalid_exit: raise_on_invalid_exit
+              raise_on_invalid_exit:
             )
           )
         end

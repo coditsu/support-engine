@@ -17,7 +17,7 @@ module SupportEngine
         def call_in_path(path, command, options, raise_on_invalid_exit: true)
           result = SupportEngine::Shell::Utf8.call(
             "git -C #{path} #{command} #{options}",
-            raise_on_invalid_exit: raise_on_invalid_exit
+            raise_on_invalid_exit:
           )
 
           result[:stdout].split("\n")

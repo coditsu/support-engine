@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Capybara/FindAllFirst
 RSpec.describe_current do
   let(:commits_scope) { SupportEngine::Git::Commits }
   let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
@@ -55,7 +56,7 @@ RSpec.describe_current do
     context 'when master with branch' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
       let(:branch) { 'master' }
-      let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
+      let(:commit_hash) { commits_scope.all(path, branch:).first[:commit_hash] }
 
       before { SupportEngine::Git::RepoBuilder::Master.bootstrap }
 
@@ -79,7 +80,7 @@ RSpec.describe_current do
     context 'when master branch only' do
       let(:branch) { 'master' }
       let(:path) { SupportEngine::Git::RepoBuilder::MasterOnly.location }
-      let(:commit_hash) { commits_scope.all(path, branch: branch).first[:commit_hash] }
+      let(:commit_hash) { commits_scope.all(path, branch:).first[:commit_hash] }
 
       before { SupportEngine::Git::RepoBuilder::MasterOnly.bootstrap }
 
@@ -137,3 +138,4 @@ RSpec.describe_current do
     end
   end
 end
+# rubocop:enable Capybara/FindAllFirst

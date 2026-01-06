@@ -61,7 +61,7 @@ module SupportEngine
         # @param path [String] path of a current repository build
         # @return [DateTime] datetime of a head commit
         def head_committed_at(path)
-          Time.parse(Shell::Git.call_in_path(path, :log, '-1 --format=%cd').first)
+          Time.zone.parse(Shell::Git.call_in_path(path, :log, '-1 --format=%cd').first)
         end
       end
     end

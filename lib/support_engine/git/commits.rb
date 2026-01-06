@@ -189,7 +189,7 @@ module SupportEngine
             {
               commit_hash: part2[0],
               committed_at: Time.zone.parse(part1[0]),
-              source: source
+              source:
             }
           end
           data.uniq! { |h| h[:commit_hash] }

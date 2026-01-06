@@ -13,39 +13,29 @@ module SupportEngine
       class Base
         class << self
           # @return [String] Where should we put our test dummy repo
-          def location
-            ::File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
-          end
+          def location = ::File.join(SupportEngine.gem_root, 'tmp', "test_repo_#{name}")
 
           # @return [String] Path to .git folder of our location
-          def location_git
-            ::File.join(location, '.git')
-          end
+          def location_git = ::File.join(location, '.git')
 
           # @return [String] Origin poiting to external location
-          def origin
-            "https://something.origin/#{name}"
-          end
+          def origin = "https://something.origin/#{name}"
 
           # @return [String] Default committer that is git compatible
           # @example
           #   self.committer #=> 'Committer <committer@coditsu.io>'
-          def committer
-            Committer.call
-          end
+          def committer = Committer.call
 
           # @return [String] underscored name of current class without modules
           # @example
           #   self.name #=> 'master_mirror'
-          def name
-            to_s.split('::').last.underscore
-          end
+          def name = to_s.split('::').last.underscore
 
           # @param message [String] commit message that we want to have
           # @param author [String] author details in git compatible format
           # @param committed_at [Time, DateTime] time of a commit (now is the default)
           # @return [String] git commit command with proper message, date and author
-          def commit(message, author: committer, committed_at: Time.now)
+          def commit(message, author: committer, committed_at: Time.current)
             cmd = []
             cmd << "GIT_COMMITTER_DATE='#{committed_at}'"
             cmd << "git commit --no-gpg-sign -m '#{message}'"
@@ -56,8 +46,11 @@ module SupportEngine
           # Creates a dummy repository in LOCATION with some commits and branches
           def bootstrap
             destroy
-            SupportEngine::Shell.call(const_get(:BOOTSTRAP_CMD))
+            SupportEngine::Shell.call(bootstrap_cmd)
           end
+
+          # @return [String] Bootstrap command - override in subclasses
+          def bootstrap_cmd = raise NotImplementedError
 
           # Destroys dummy repository directory
           def destroy

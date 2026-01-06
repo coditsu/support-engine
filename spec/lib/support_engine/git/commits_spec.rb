@@ -39,9 +39,9 @@ RSpec.describe_current do
 
     context 'when we want limited number of commits by time' do
       # on local machines timezone is in CET and Time.zone.now returns UTC
-      subject(:all) { described_class.all(path, since: since) }
+      subject(:all) { described_class.all(path, since:) }
 
-      let(:since) { Time.zone.now + 6.hours }
+      let(:since) { 6.hours.from_now }
       let(:path) { SupportEngine::Git::RepoBuilder::MasterMirror.location }
 
       # There won't be any commits from now
@@ -73,7 +73,7 @@ RSpec.describe_current do
   end
 
   describe '.latest_by_day' do
-    subject(:latest_by_day) { described_class.latest_by_day(path, limit: limit) }
+    subject(:latest_by_day) { described_class.latest_by_day(path, limit:) }
 
     let(:limit) { nil }
 

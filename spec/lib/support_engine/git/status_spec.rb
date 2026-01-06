@@ -21,32 +21,32 @@ RSpec.describe_current do
     end
 
     context 'when some files were introduced' do
-      let(:introduced_file_name1) { rand.to_s }
-      let(:introduced_file_name2) { rand.to_s }
+      let(:first_introduced_file) { rand.to_s }
+      let(:second_introduced_file) { rand.to_s }
 
       before do
-        `echo change >> #{File.join(path, introduced_file_name1)}`
-        `echo change >> #{File.join(path, introduced_file_name2)}`
+        `echo change >> #{File.join(path, first_introduced_file)}`
+        `echo change >> #{File.join(path, second_introduced_file)}`
       end
 
       it { expect(introduced.size).to eq 2 }
-      it { is_expected.to include introduced_file_name1 }
-      it { is_expected.to include introduced_file_name2 }
+      it { is_expected.to include first_introduced_file }
+      it { is_expected.to include second_introduced_file }
     end
 
     context 'when some files were introduced and changed' do
-      let(:introduced_file_name1) { rand.to_s }
-      let(:introduced_file_name2) { rand.to_s }
+      let(:first_introduced_file) { rand.to_s }
+      let(:second_introduced_file) { rand.to_s }
 
       before do
         `echo change >> #{File.join(path, 'master.rb')}`
-        `echo change >> #{File.join(path, introduced_file_name1)}`
-        `echo change >> #{File.join(path, introduced_file_name2)}`
+        `echo change >> #{File.join(path, first_introduced_file)}`
+        `echo change >> #{File.join(path, second_introduced_file)}`
       end
 
       it { expect(introduced.size).to eq 2 }
-      it { is_expected.to include introduced_file_name1 }
-      it { is_expected.to include introduced_file_name2 }
+      it { is_expected.to include first_introduced_file }
+      it { is_expected.to include second_introduced_file }
     end
   end
 end

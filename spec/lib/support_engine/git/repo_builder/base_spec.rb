@@ -33,12 +33,14 @@ RSpec.describe_current do
 
     let(:command) { 'command' }
 
-    before { described_class.const_set(:BOOTSTRAP_CMD, command) }
+    before { allow(described_class).to receive(:bootstrap_cmd).and_return(command) }
 
-    it 'expect to  call, destroy and match shell result' do
-      expect(described_class).to receive(:destroy)
-      expect(SupportEngine::Shell).to receive(:call).with(command).and_return('test')
+    it 'expect to call, destroy and match shell result' do
+      allow(described_class).to receive(:destroy)
+      allow(SupportEngine::Shell).to receive(:call).with(command).and_return('test')
       expect(bootstrap).to eq('test')
+      expect(described_class).to have_received(:destroy)
+      expect(SupportEngine::Shell).to have_received(:call).with(command)
     end
   end
 

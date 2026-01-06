@@ -5,7 +5,7 @@ RSpec.describe_current do
     subject(:shell_result) do
       described_class.call(
         command_with_options,
-        raise_on_invalid_exit: raise_on_invalid_exit
+        raise_on_invalid_exit:
       )
     end
 

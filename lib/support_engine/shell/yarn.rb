@@ -13,7 +13,7 @@ module SupportEngine
         def call(command, options, raise_on_invalid_exit: true)
           Shell::Utf8.call(
             "yarn run --silent #{command} #{options}",
-            raise_on_invalid_exit: raise_on_invalid_exit
+            raise_on_invalid_exit:
           )
         end
 
@@ -26,7 +26,7 @@ module SupportEngine
           Shell::Utf8.call_in_path(
             path,
             "yarn run --silent #{command} #{options}",
-            raise_on_invalid_exit: raise_on_invalid_exit
+            raise_on_invalid_exit:
           )
         end
       end

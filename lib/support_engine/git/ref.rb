@@ -25,11 +25,11 @@ module SupportEngine
         # @example
         #   Git::Ref.head(<local_path>) #=>
         #     {:stdout=>"develop\n", :stderr=>"", :exit_code=>0}
-        def head(local_path, raise_on_invalid_exit = true)
+        def head(local_path, raise_on_invalid_exit: true)
           Shell.call_in_path(
             local_path,
             'git rev-parse --abbrev-ref HEAD',
-            raise_on_invalid_exit: raise_on_invalid_exit
+            raise_on_invalid_exit:
           )
         end
 
@@ -41,7 +41,7 @@ module SupportEngine
         # @example
         #   Git::Ref.head!(<local_path>) #=> develop
         def head!(local_path)
-          result = head(local_path, false)
+          result = head(local_path, raise_on_invalid_exit: false)
           return result[:stdout].strip if head?(result)
 
           Shell.call_in_path(local_path, "git symbolic-ref HEAD #{latest(local_path)}")
@@ -52,13 +52,15 @@ module SupportEngine
         # @param result [Hash] hash with 3 keys describing output
         #   (stdout, stderr, exit_code)
         # @return [Boolean]
+        # rubocop:disable Rails/NegateInclude
         def head?(result)
-          result[:stderr].empty? || \
+          result[:stderr].empty? ||
             !result[:stderr].include?(
               "fatal: ambiguous argument 'HEAD': " \
               'unknown revision or path not in the working tree'
             )
         end
+        # rubocop:enable Rails/NegateInclude
       end
     end
   end

@@ -15,8 +15,10 @@ require 'support_engine'
 require 'support_engine/git/repo_builder'
 require 'support_engine/rspec_locator'
 
+# rubocop:disable Rails/TimeZoneAssignment
 # Set default timezone
 Time.zone = 'UTC'
+# rubocop:enable Rails/TimeZoneAssignment
 
 SimpleCov.minimum_coverage 98.5
 
