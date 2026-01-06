@@ -16,10 +16,13 @@ Gem::Specification.new do |spec|
   spec.description   = 'Shared libraries for Coditsu Quality Assurance tool'
   spec.license       = 'LGPL-3.0'
 
+  spec.required_ruby_version = '>= 3.4'
+
   spec.add_dependency 'activesupport', '< 9'
   spec.add_dependency 'logger'
   spec.add_dependency 'zeitwerk'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec)/}) }
   spec.require_paths = %w[lib]
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
