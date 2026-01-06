@@ -9,12 +9,13 @@ RSpec.describe_current do
     let(:command_with_options) { 'ls' }
     let(:options) { { raise_on_invalid_exit: true } }
 
-    after { shell_result }
-
     it 'expect to run shell and encode' do
-      expect(SupportEngine::Shell).to receive(:call)
+      allow(SupportEngine::Shell).to receive(:call)
         .with(command_with_options, options).and_return(true)
-      expect(described_class).to receive(:encode).with(true)
+      allow(described_class).to receive(:encode).with(true)
+      shell_result
+      expect(SupportEngine::Shell).to have_received(:call).with(command_with_options, options)
+      expect(described_class).to have_received(:encode).with(true)
     end
   end
 
@@ -28,11 +29,12 @@ RSpec.describe_current do
     let(:options) { { raise_on_invalid_exit: true } }
     let(:shell_args) { [path, command_with_options, options] }
 
-    after { shell_result }
-
     it 'expect to call shell in path and encode' do
-      expect(SupportEngine::Shell).to receive(:call_in_path).with(*shell_args).and_return(true)
-      expect(described_class).to receive(:encode).with(true)
+      allow(SupportEngine::Shell).to receive(:call_in_path).with(*shell_args).and_return(true)
+      allow(described_class).to receive(:encode).with(true)
+      shell_result
+      expect(SupportEngine::Shell).to have_received(:call_in_path).with(*shell_args)
+      expect(described_class).to have_received(:encode).with(true)
     end
   end
 

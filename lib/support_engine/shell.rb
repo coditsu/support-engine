@@ -38,15 +38,10 @@ module SupportEngine
       # @return [Hash] hash with 3 keys describing output (stdout, stderr, exit_code)
       def call_in_path(path, command, raise_on_invalid_exit: true)
         command = ['cd', path.to_s.shellescape, '&&', command]
-        call(command.join(' '), raise_on_invalid_exit: raise_on_invalid_exit)
+        call(command.join(' '), raise_on_invalid_exit:)
       end
 
-      # Escapes any dangerous parameters so we can use a string in a safe way in shell
-      # @param shell_string [String] string that we want to escape
-      # @return [String] safe shell parameter string
-      def escape(shell_string)
-        Shellwords.escape(shell_string)
-      end
+      delegate :escape, to: Shellwords
     end
   end
 end

@@ -29,7 +29,7 @@ RSpec.describe_current do
     end
 
     context 'when raise_on_invalid_exit false' do
-      subject(:head) { described_class.head(path, false) }
+      subject(:head) { described_class.head(path, raise_on_invalid_exit: false) }
 
       let(:path) { SupportEngine::Git::RepoBuilder::BrokenHeadRef.location }
 
@@ -66,7 +66,7 @@ RSpec.describe_current do
   end
 
   describe '#head?' do
-    subject(:head?) { described_class.head?(described_class.head(path, false)) }
+    subject(:head?) { described_class.head?(described_class.head(path, raise_on_invalid_exit: false)) }
 
     context 'when valid head ref' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }

@@ -9,13 +9,14 @@ RSpec.describe_current do
     let(:args) do
       [
         "yarn run --silent #{command} #{options}",
-        raise_on_invalid_exit: true
+        { raise_on_invalid_exit: true }
       ]
     end
 
     it 'expect to run yarn in shell' do
-      expect(SupportEngine::Shell::Utf8).to receive(:call).with(*args)
+      allow(SupportEngine::Shell::Utf8).to receive(:call).with(*args)
       shell_result
+      expect(SupportEngine::Shell::Utf8).to have_received(:call).with(*args)
     end
   end
 

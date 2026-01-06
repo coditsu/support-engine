@@ -133,12 +133,12 @@ RSpec.describe_current do
       let(:ref) { '7987d360dc73ac64ead4a26f8a451822e37788f5' }
       let(:message) do
         "Note: checking out '7987d360dc73ac64ead4a26f8a451822e37788f5'.\n\n" \
-        "You are in 'detached HEAD' state. You can look around, make experimental\n" \
-        "changes and commit them, and you can discard any commits you make in this\n" \
-        "state without impacting any branches by performing another checkout.\n\n" \
-        "If you want to create a new branch to retain commits you create, you may\n" \
-        "do so (now or later) by using -b with the checkout command again. Example:\n\n  " \
-        "git checkout -b <new-branch-name>\n\nHEAD is now at 7987d36... master commit"
+          "You are in 'detached HEAD' state. You can look around, make experimental\n" \
+          "changes and commit them, and you can discard any commits you make in this\n" \
+          "state without impacting any branches by performing another checkout.\n\n" \
+          "If you want to create a new branch to retain commits you create, you may\n" \
+          "do so (now or later) by using -b with the checkout command again. Example:\n\n  " \
+          "git checkout -b <new-branch-name>\n\nHEAD is now at 7987d36... master commit"
       end
 
       it { is_expected.to be true }

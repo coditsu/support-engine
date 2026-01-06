@@ -42,15 +42,17 @@ module SupportEngine
         end
 
         # Steps we need to take in order to setup dummy repository
-        BOOTSTRAP_CMD = [
-          "git init #{location}",
-          "cd #{location}",
-          "printf \"#{gemfile}\" > Gemfile",
-          "printf \"#{gemfile_lock}\" > Gemfile.lock",
-          'git add --all ./',
-          commit('master commit'),
-          "git remote add origin #{origin}"
-        ].join(' && ').freeze
+        def self.bootstrap_cmd
+          [
+            "git init #{location}",
+            "cd #{location}",
+            "printf \"#{gemfile}\" > Gemfile",
+            "printf \"#{gemfile_lock}\" > Gemfile.lock",
+            'git add --all ./',
+            commit('master commit'),
+            "git remote add origin #{origin}"
+          ].join(' && ')
+        end
       end
     end
   end

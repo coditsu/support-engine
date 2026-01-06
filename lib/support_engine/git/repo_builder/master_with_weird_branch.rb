@@ -17,18 +17,20 @@ module SupportEngine
         end
 
         # Steps we need to take in order to setup dummy repository
-        BOOTSTRAP_CMD = [
-          "git init #{location}",
-          "cd #{location}",
-          'echo "hash = { \'test\' => 1 }" > master.rb',
-          'git add --all ./',
-          commit('master commit', committed_at: 30.days.ago),
-          'git branch \'#w@eird-branch\'',
-          'git checkout \'#w@eird-branch\'',
-          create_commits,
-          'git checkout master',
-          "git remote add origin #{origin}"
-        ].join(' && ').freeze
+        def self.bootstrap_cmd
+          [
+            "git init #{location}",
+            "cd #{location}",
+            'echo "hash = { \'test\' => 1 }" > master.rb',
+            'git add --all ./',
+            commit('master commit', committed_at: 30.days.ago),
+            'git branch \'#w@eird-branch\'',
+            'git checkout \'#w@eird-branch\'',
+            create_commits,
+            'git checkout master',
+            "git remote add origin #{origin}"
+          ].join(' && ')
+        end
       end
     end
   end

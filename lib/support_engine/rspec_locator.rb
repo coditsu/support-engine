@@ -3,7 +3,7 @@
 %w[
   active_support/inflector
   fileutils
-].each(&method(:require))
+].each { require(it) }
 
 module SupportEngine
   # RSpec extension for the `RSpec.describe` subject class auto-discovery
@@ -15,6 +15,7 @@ module SupportEngine
   class RSpecLocator < Module
     # @param  spec_helper_file_path [String] path to the spec_helper.rb file
     def initialize(spec_helper_file_path)
+      super()
       @specs_root_dir = ::File.dirname(spec_helper_file_path)
     end
 
@@ -29,12 +30,12 @@ module SupportEngine
       # out the proper class that we want to describe
       # @param block [Proc] block with specs
       rspec.define_singleton_method :describe_current do |&block|
-        describe(this.inherited, &block)
+        describe(this.described_class_from_path, &block)
       end
     end
 
     # @return [Class] class name for the RSpec `#describe` method
-    def inherited
+    def described_class_from_path
       caller(2..2)
         .first
         .split(':')
@@ -43,7 +44,7 @@ module SupportEngine
         .gsub('_spec.rb', '')
         .split('/')
         .delete_if(&:empty?)
-        .itself[1..-1]
+        .itself[1..]
         .join('/')
         .camelize
         .constantize

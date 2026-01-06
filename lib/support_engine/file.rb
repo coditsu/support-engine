@@ -5,7 +5,7 @@ module SupportEngine
   module File
     class << self
       # Regex to select encoding details from file -bi command results
-      CHARSET_DETECT_REGEXP = /charset=(.*)\n/.freeze
+      CHARSET_DETECT_REGEXP = /charset=(.*)\n/
       # Default fallback encoding
       DEFAULT_ENCODING = 'utf-8'
 

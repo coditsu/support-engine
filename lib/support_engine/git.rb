@@ -9,7 +9,9 @@ module SupportEngine
       # @param local_path [String] local path to which we clone
       # @return [Boolean] true if repository got cloned
       # @raise [Errors::FailedShellCommand] raised when anything went wrong
+      # rubocop:disable Naming/PredicateMethod
       def clone_mirror(remote_path, local_path)
+        # rubocop:enable Naming/PredicateMethod
         Shell.call("git clone --mirror #{remote_path} #{local_path}/.git/")
         Shell.call_in_path(local_path, 'git remote update --prune')
         Shell.call_in_path(local_path, 'git config --bool core.bare false')
@@ -22,7 +24,9 @@ module SupportEngine
       # @param path [String] path of a current repository build
       # @param ref [String] branch or commit that we want to checkout to
       # @return [Boolean] true if we were able to checkout
+      # rubocop:disable Naming/PredicateMethod
       def checkout(path, ref)
+        # rubocop:enable Naming/PredicateMethod
         result = SupportEngine::Shell.call_in_path(
           path,
           "git checkout #{ref}",

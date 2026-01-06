@@ -11,7 +11,9 @@ module SupportEngine
         # @raise [SupportEngine::Errors::FailedShellCommand] raised when anything went wrong
         # @example Reset state (watch out - this will reset for real!)
         #   SupportEngine::Git::Gc.reset('./') #=> true
+        # rubocop:disable Naming/PredicateMethod
         def reset(path)
+          # rubocop:enable Naming/PredicateMethod
           Shell::Git.call_in_path(path, :reset, '--hard HEAD')
           Shell::Git.call_in_path(path, :clean, '-f -d')
           true

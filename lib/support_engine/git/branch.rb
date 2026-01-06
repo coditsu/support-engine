@@ -28,7 +28,7 @@ module SupportEngine
       DETACH_STRING = 'HEAD detached'
 
       # Regexp to remove the '* ' prefix of current branch
-      CURRENT_BRANCH_SANITIZER = /\A\*\s{1}/.freeze
+      CURRENT_BRANCH_SANITIZER = /\A\*\s{1}/
 
       class << self
         # Detects a given commit branch
@@ -45,13 +45,13 @@ module SupportEngine
 
           # If the head points to HEAD it means that the repo is in the detach state
           # and we need to pick the latest ref to get a head branch
-          head = head == 'HEAD' ? sanitize_branch(Ref.latest(path)) : head
+          head = sanitize_branch(Ref.latest(path)) if head == 'HEAD'
 
           candidates = call_in_path!(path, cmd)[:stdout]
-                       .split("\n")
-                       .map { |cand| cand.gsub(CURRENT_BRANCH_SANITIZER, '') }
-                       .map(&:strip)
-                       .tap { |arr| arr.delete_if { |cand| cand.include?(DETACH_STRING) } }
+            .split("\n")
+            .map { |cand| cand.gsub(CURRENT_BRANCH_SANITIZER, '') }
+            .map(&:strip)
+            .tap { |arr| arr.delete_if { |cand| cand.include?(DETACH_STRING) } }
 
           resolve_branch(
             candidates,
@@ -151,7 +151,9 @@ module SupportEngine
         # @param commit_hash [String] commit hash we're checking
         # @param head [String] name of the head branch
         # @return [String] origin branch of a commit hash
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def resolve_from_origins(origin_refs, commit_hash, head)
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           # We prioritize head branches as main branches of a commit if they are in the head
           return head if origin_refs.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
@@ -172,7 +174,7 @@ module SupportEngine
           end
 
           # And we pick the first one with and sanitize it to get only the branch name
-          (branch || candidates.first)
+          branch || candidates.first
         end
 
         # When we cannot find branch of a commit hash, we try to find pull request as it probably
@@ -201,7 +203,7 @@ module SupportEngine
           raise SupportEngine::Errors::UnknownBranch unless branch
 
           UNWANTED_PREFIXES.each { |prefix| branch.gsub!(/\A#{prefix}/, '') }
-          branch.gsub!(%r{\/head\z}, '') if branch.start_with?('pull/')
+          branch.delete_suffix!('/head') if branch.start_with?('pull/')
 
           branch
         end

@@ -6,13 +6,13 @@ RSpec.describe_current do
 
     context 'when some files were introduced' do
       let(:path) { SupportEngine::Git::RepoBuilder::Master.location }
-      let(:introduced_file_name1) { rand.to_s }
-      let(:introduced_file_name2) { rand.to_s }
+      let(:first_introduced_file) { rand.to_s }
+      let(:second_introduced_file) { rand.to_s }
       let(:introduced) { SupportEngine::Git::Status.introduced(path) }
 
       before do
-        `echo change >> #{File.join(path, introduced_file_name1)}`
-        `echo change >> #{File.join(path, introduced_file_name2)}`
+        `echo change >> #{File.join(path, first_introduced_file)}`
+        `echo change >> #{File.join(path, second_introduced_file)}`
         reset
       end
 
