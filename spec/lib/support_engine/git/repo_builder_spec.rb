@@ -8,9 +8,11 @@ RSpec.describe_current do
     let(:versions) { [version] }
 
     it 'expect to take all the versions and bootstrap all of them' do
-      expect(described_class).to receive(:versions) { versions }
-      expect(version).to receive(:bootstrap)
+      allow(described_class).to receive(:versions).and_return(versions)
+      allow(version).to receive(:bootstrap)
       bootstrap
+      expect(described_class).to have_received(:versions)
+      expect(version).to have_received(:bootstrap)
     end
   end
 
@@ -21,9 +23,11 @@ RSpec.describe_current do
     let(:versions) { [version] }
 
     it 'expect to take all the versions and destroy all of them' do
-      expect(described_class).to receive(:versions) { versions }
-      expect(version).to receive(:destroy)
+      allow(described_class).to receive(:versions).and_return(versions)
+      allow(version).to receive(:destroy)
       destroy
+      expect(described_class).to have_received(:versions)
+      expect(version).to have_received(:destroy)
     end
   end
 

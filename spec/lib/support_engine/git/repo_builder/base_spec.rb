@@ -62,8 +62,9 @@ RSpec.describe_current do
 
     context 'when dir does not exist' do
       it 'expect not to try to remove it' do
-        expect(FileUtils).not_to receive(:rm_r)
+        allow(FileUtils).to receive(:rm_r)
         destroy
+        expect(FileUtils).not_to have_received(:rm_r)
       end
     end
   end

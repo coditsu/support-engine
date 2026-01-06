@@ -12,9 +12,11 @@ RSpec.describe_current do
     end
 
     it 'expect to remove previous repo, clone mirror to a new one and return clone path' do
-      expect(described_class).to receive(:destroy)
-      expect(SupportEngine::Git).to receive(:clone_mirror).with(*clone_args).and_return('test')
+      allow(described_class).to receive(:destroy)
+      allow(SupportEngine::Git).to receive(:clone_mirror).with(*clone_args).and_return('test')
       expect(bootstrap).to eq('test')
+      expect(described_class).to have_received(:destroy)
+      expect(SupportEngine::Git).to have_received(:clone_mirror).with(*clone_args)
     end
   end
 end

@@ -151,7 +151,9 @@ module SupportEngine
         # @param commit_hash [String] commit hash we're checking
         # @param head [String] name of the head branch
         # @return [String] origin branch of a commit hash
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def resolve_from_origins(origin_refs, commit_hash, head)
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           # We prioritize head branches as main branches of a commit if they are in the head
           return head if origin_refs.any? do |candidate|
             candidate.include?('origin/HEAD') || candidate.include?("refs/heads/#{head}")
